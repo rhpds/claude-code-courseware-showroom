@@ -1,0 +1,11 @@
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+{command}
+----
+====

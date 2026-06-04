@@ -1,0 +1,11 @@
+/* Showroom style tweaks for Claude Code Courseware */
+
+.doc .admonitionblock.important .icon {
+  background-color: #ee0000;
+}
+
+.module-meta {
+  color: #6a737d;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
