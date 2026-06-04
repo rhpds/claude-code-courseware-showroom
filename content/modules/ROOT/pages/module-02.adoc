@@ -1,0 +1,108 @@
+= Module 02: Writing CLAUDE.md
+:navtitle: 02. Writing CLAUDE.md
+:description: Learn how to write a CLAUDE.md file that shapes Claude Code's behavior in any project.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Learn how to write a CLAUDE.md file that shapes Claude Code's behavior in any project. When complete, you'll know how to give Claude persistent project instructions covering conventions, tool preferences, cost-saving patterns, and workflow rules.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-02-writing-claude-md
+----
+====
+
+== What You Will Learn
+
+* What CLAUDE.md is and where it can live in your project structure
+* The key sections every effective CLAUDE.md should have
+* Cost-saving patterns to reduce token usage and manage context
+* How to use the `/init` command to auto-generate a starter CLAUDE.md
+* The relationship between CLAUDE.md, CLAUDE.local.md, and auto memory
+* How to write project-specific instructions that Claude will reliably follow
+
+== Key Concepts
+
+=== CLAUDE.md as Persistent Project Instructions
+
+CLAUDE.md is a Markdown file that Claude Code reads automatically at the start of every session. It acts like onboarding documentation for a new developer -- instructions that persist across sessions and don't need to be repeated. Unlike prompts you type in conversation, CLAUDE.md is always present and shapes how Claude approaches your code.
+
+=== Layered Instructions
+
+Claude Code reads CLAUDE.md files from multiple locations and merges them:
+
+* **Workspace-level** (`~/repos/CLAUDE.md`) -- applies to all projects in that directory tree
+* **Project-level** (`~/repos/my-project/CLAUDE.md`) -- applies to this specific project
+* **Subdirectory** (`~/repos/my-project/src/CLAUDE.md`) -- applies when Claude reads files in that directory
+* **Local** (`~/repos/my-project/.claude/CLAUDE.local.md`) -- personal notes, automatically gitignored
+
+This layering allows you to set shared conventions at the workspace level (coding style, commit message rules) and project-specific details at the project level (which MCP servers to use, test commands).
+
+=== What to Include in CLAUDE.md
+
+CLAUDE.md is for instructions that don't belong in code. Things like:
+
+* Framework or library version requirements ("use PatternFly 6, not 5")
+* Test framework preferences ("use pytest, not unittest")
+* Workflow automation ("always run lint after code changes")
+* MCP server usage rules ("use Git MCP for status/diff, not shell commands")
+* Commit message conventions ("no conventional-commit prefixes")
+* Cost-saving patterns (subagent delegation, preferred tools, session discipline)
+
+If a new developer joining the project would need to know it, and it's not obvious from the code itself, it belongs in CLAUDE.md.
+
+=== Cost-Saving Patterns
+
+Three patterns from the cost-saving reference bundle that reduce token usage:
+
+**Subagent Delegation** -- Spawn subagents to isolate context. A 5000-line file read in a subagent doesn't bloat the parent session. Tell Claude which model tier to use (Haiku for mechanical work, Sonnet for research, Opus for planning).
+
+**Preferred Tools** -- Tell Claude which tools to prefer for common operations. For example, use `pdftotext` instead of the Read tool on PDFs (Read rasterizes them as images at ~1.5K tokens per page; pdftotext returns plain text at a fraction of the cost).
+
+**Session Discipline** -- Tell Claude when to compact and clear. Running `/compact` proactively at ~50% context preserves important information and drops raw tool output before hitting the auto-compact limit.
+
+=== CLAUDE.md vs Auto Memory
+
+Claude Code has two mechanisms for persistent context:
+
+* **CLAUDE.md** -- YOUR instructions to Claude (conventions, rules, workflows you define)
+* **Auto memory** -- CLAUDE'S notes about your project (patterns it noticed, decisions from past sessions, things you taught it)
+
+CLAUDE.md is authoritative and deterministic. Auto memory is observational and adaptive. Both complement each other, but for rules that MUST be enforced, use hooks (covered in Module 10) instead of CLAUDE.md.
+
+=== The /init Command
+
+The `/init` command analyzes your codebase -- detecting build systems, test frameworks, code patterns, and project structure -- and generates a starter CLAUDE.md. This gives you a solid foundation to refine and is much better than starting from a blank file, because it captures project-specific details you might forget to include.
+
+== Steps Overview
+
+The interactive walkthrough covers:
+
+. **Understand CLAUDE.md** -- Where CLAUDE.md files can live and how Claude reads them
+. **Use /init to bootstrap** -- Generate a starter CLAUDE.md from your codebase
+. **Learn the key sections** -- Project overview, conventions, tool usage, workflow rules, preferences
+. **Cost-saving patterns** -- Subagent delegation, preferred tools, session discipline
+. **Auto memory and CLAUDE.md** -- How auto memory complements CLAUDE.md
+. **Write a CLAUDE.md for a project** -- Hands-on creation of a real CLAUDE.md
+. **Examine a real CLAUDE.md** -- Review the courseware repo's own CLAUDE.md as a worked example
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* At least one project directory to practice with
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-02-writing-claude-md
+----

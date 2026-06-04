@@ -1,0 +1,80 @@
+= Module 01: Claude Code + Vertex AI Setup
+:navtitle: 01. Vertex AI Setup
+:description: Install Claude Code and configure Google Cloud Vertex AI as the backend provider.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: None
+
+Install Claude Code and configure Google Cloud Vertex AI as the backend provider. When complete, all Claude API calls route through your assigned GCP project -- no Anthropic API key required.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-01-vertex-setup
+----
+====
+
+== What You Will Learn
+
+* How to install the Google Cloud CLI (gcloud)
+* How to install and configure Claude Code with the native installer
+* How to authenticate with Google Cloud using your Red Hat identity
+* How to set up Application Default Credentials (ADC) for Claude Code
+* How to configure Vertex AI environment variables in both `~/.claude/settings.json` and your shell config
+* How to verify your setup end-to-end
+
+== Key Concepts
+
+=== Vertex AI as Backend Provider
+
+Claude Code can use Google Cloud's Vertex AI instead of Anthropic's direct API. This means your Claude API calls route through your assigned GCP project, which handles billing and quota management through Google Cloud rather than requiring an Anthropic API key.
+
+=== Application Default Credentials (ADC)
+
+ADC is Google's standard mechanism for application authentication. Claude Code uses ADC to obtain authentication tokens from Google Cloud automatically. When you run `gcloud auth application-default login`, you authorize Claude Code to access Vertex AI on your behalf without needing to manage API keys manually.
+
+=== Environment Variables Configuration
+
+Claude Code needs three environment variables to use Vertex AI:
+
+* `CLAUDE_CODE_USE_VERTEX=1` -- tells Claude Code to route API calls through Vertex AI
+* `ANTHROPIC_VERTEX_PROJECT_ID=your-project-id` -- specifies which GCP project to bill against
+* `CLOUD_ML_REGION=global` -- sets the region for Vertex AI API calls
+
+These can be set in two places: `~/.claude/settings.json` (recommended, works everywhere) and your shell config file (`~/.zshrc` or `~/.bashrc`, ensures new terminals have them). The module sets both to ensure compatibility with all environments.
+
+=== GCP Project Assignment
+
+Your team lead assigns you a GCP project ID. This project must have Vertex AI API enabled and your Google identity must have permission to use it. Without a valid project ID, Claude Code cannot authenticate with Vertex AI.
+
+== Steps Overview
+
+The interactive walkthrough covers:
+
+. **Install gcloud CLI** -- Install the Google Cloud SDK via Homebrew (Mac) or Google's installer (Linux)
+. **Install Node.js** -- Claude Code requires Node.js 18 or higher
+. **Install Claude Code** -- Use the native installer (recommended for auto-updates) or npm
+. **Authenticate with Google Cloud** -- Sign in with your @redhat.com account via `gcloud auth login`
+. **Set up Application Default Credentials** -- Authorize Claude Code to use Vertex AI via `gcloud auth application-default login`
+. **Set GCP project** -- Configure your assigned GCP project ID with `gcloud config set project`
+. **Write Vertex AI environment variables** -- Write the three required environment variables to both `~/.claude/settings.json` and your shell config
+
+Each step includes preflight checks to skip what's already configured and verification to confirm success.
+
+== Prerequisites
+
+None. This is the first module in the courseware and assumes no prior setup.
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-01-vertex-setup
+----
