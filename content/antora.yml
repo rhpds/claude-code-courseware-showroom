@@ -1,0 +1,12 @@
+name: modules
+title: Claude Code Courseware
+version: ~
+nav:
+  - modules/ROOT/nav.adoc
+asciidoc:
+  attributes:
+    lab_name: Claude Code Courseware
+    page-pagination: true
+    plugin_install_command: "claude plugin add github:rhpds/claude-code-courseware"
+    courseware_repo: "https://github.com/rhpds/claude-code-courseware"
+    module_count: 29

@@ -1,0 +1,16 @@
+site:
+  title: Claude Code Courseware
+  url: https://github.com/rhpds/claude-code-courseware-showroom
+  start_page: modules::index.adoc
+content:
+  sources:
+    - url: .
+      start_path: content
+ui:
+  bundle:
+    url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/v0.0.1/ui-bundle.zip
+    snapshot: true
+  supplemental_files:
+    - path: ./content/supplemental-ui
+output:
+  dir: ./www
