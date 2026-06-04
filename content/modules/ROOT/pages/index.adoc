@@ -1,0 +1,59 @@
+= Claude Code Courseware
+:navtitle: Welcome
+:description: Hands-on learning modules for the RHDP operations team, delivered as interactive Claude Code skills.
+
+== Welcome
+
+Claude Code Courseware is a set of *{module_count} interactive learning modules* for the RHDP operations team. Each module teaches a specific tool or integration through a guided, hands-on walkthrough that runs inside Claude Code.
+
+This showroom provides a reference guide for every module alongside a terminal where you can run the interactive walkthroughs.
+
+== How It Works
+
+. *Install the plugin* in the terminal tab (see xref:getting-started.adoc[Getting Started])
+. *Browse modules* in the navigation sidebar to understand what each one covers
+. *Run a module* by typing its command in the terminal (e.g., `/learn-01-vertex-setup`)
+. *Follow the walkthrough* -- Claude Code guides you through each step with verification
+
+== Module Categories
+
+[cols="1,3",options="header"]
+|===
+| Category | Modules
+
+| Setup & Foundation
+| 01 Vertex AI Setup, 02 Writing CLAUDE.md
+
+| Core MCP Servers
+| 03 Memory, 04 Git, 05 Atlassian, 06 Playwright, 07 Notion, 08 Container & Podman
+
+| Skills & Customization
+| 09 Writing Skills, 10 Hooks, 21 Plugin Marketplace
+
+| Security
+| 24 Security-First Development, 25 Security Scanning
+
+| Advanced Patterns
+| 11 Building MCP Servers, 12 Review Agents, 13 Agent Teams, 26 Agent SDK
+
+| Parallel & Autonomous
+| 22 Git Worktrees, 23 Background Agents & Goal Mode
+
+| Workflow & Operations
+| 14 Debugging, 15 Cost Management, 16 Multi-Repo, 17 CI/CD, 18 Profile Cleanup, 27 Checkpointing, 28 Voice & Vim, 29 Effort Control
+
+| Team-Customizable
+| 19 Red Hat Quick Deck, 20 Hivemind Knowledge Base
+|===
+
+== Recommended Paths
+
+*Developer:* 01, 02, 03, 04, 06, 09, 24 -- environment setup, daily tools, security-first habits.
+
+*Ops engineer:* 01, 02, 03, 05, 08, 10, 14, 24 -- Jira integration, containers, hooks, debugging, security.
+
+*Security-focused:* 01, 02, 24, 25, 10, 17 -- security modules, hooks for guardrails, CI/CD scanning.
+
+*Team lead / manager:* 01, 02, 15, 24 -- setup, project config, cost management, security awareness.
+
+*Power user:* Start at 01 and go in order. Each module builds on the previous ones.

@@ -1,0 +1,76 @@
+= Getting Started
+:navtitle: Getting Started
+:description: Install the courseware plugin and start your first module.
+
+== Prerequisites
+
+* A Mac or Linux workstation
+* A Red Hat Google Cloud account with an assigned GCP project
+* A terminal (the Terminal tab in this showroom works)
+
+== Step 1: Install Claude Code
+
+If you do not already have Claude Code installed, run the native installer:
+
+[source,sh,role=execute]
+----
+curl -fsSL https://claude.ai/install.sh | sh
+----
+
+Verify:
+
+[source,sh,role=execute]
+----
+claude --version
+----
+
+== Step 2: Install the Courseware Plugin
+
+[source,sh,role=execute]
+----
+claude plugin add github:rhpds/claude-code-courseware
+----
+
+This makes all `/learn-*` commands available from any project directory.
+
+== Step 3: Launch Claude Code
+
+[source,sh,role=execute]
+----
+claude
+----
+
+== Step 4: Browse the Catalog
+
+Inside Claude Code, type:
+
+[source,text]
+----
+/courseware
+----
+
+This shows all {module_count} modules with descriptions, time estimates, and recommended learning paths.
+
+== Step 5: Start Your First Module
+
+The recommended starting point is Module 01 (Vertex AI Setup):
+
+[source,text]
+----
+/learn-01-vertex-setup
+----
+
+Claude Code will guide you through each step, verify your progress, and present a hands-on challenge at the end.
+
+== Alternative: Clone the Repo
+
+If you prefer to work from a local clone instead of the plugin:
+
+[source,sh,role=execute]
+----
+git clone https://github.com/rhpds/claude-code-courseware.git
+cd claude-code-courseware
+claude .
+----
+
+Then type `/courseware` to see all modules.
