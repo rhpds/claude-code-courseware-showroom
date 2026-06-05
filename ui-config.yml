@@ -8,5 +8,5 @@ view_switcher:
 
 tabs:
   - name: Terminal
-    path: /wetty
+    path: /terminal/
     port: 443

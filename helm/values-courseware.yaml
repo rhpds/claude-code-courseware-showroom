@@ -7,7 +7,7 @@ terminal:
   setup: "true"
 
 wetty:
-  setup: "true"
+  setup: "false"
 
 nookbag_sidecar:
   setup: "false"
