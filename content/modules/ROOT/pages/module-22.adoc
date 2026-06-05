@@ -1,0 +1,230 @@
+= Module 22: Git Worktrees
+:navtitle: 22. Git Worktrees
+:description: Use git worktrees for parallel, isolated Claude Code sessions.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Use git worktrees for parallel, isolated Claude Code sessions. When complete, you'll know how to create worktrees, configure them, and use them for safe parallel feature work.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-22-git-worktrees
+----
+====
+
+== What You Will Learn
+
+* What worktrees are and why they matter for AI agents
+* Creating worktrees with Claude Code
+* Copying gitignored files with .worktreeinclude
+* Worktree settings and base branch configuration
+* Subagent isolation with worktrees
+* Cleaning up worktrees
+
+== Key Concepts
+
+A git worktree is a separate working directory with its own files and branch, sharing the same repository history and remote as your main checkout. Running each Claude Code session in its own worktree means edits in one session never touch files in another.
+
+=== Why Worktrees Matter for AI Agents
+
+Without worktrees, if you run two Claude Code sessions in the same directory, both sessions edit the same files. One session's changes can overwrite the other's. Tests in one session can fail because the other session just modified the code.
+
+With worktrees, each session gets its own copy of the files. They can't interfere with each other. You can have Claude building a feature in one terminal while fixing a bug in a second terminal, and the two never collide.
+
+This is different from branches alone. Branches share the working directory -- switching branches changes the files in place. Worktrees give each branch its own directory, so you can work on multiple branches simultaneously without switching.
+
+=== Worktree Structure
+
+----
+~/repos/my-project/              <-- main worktree (your normal checkout)
+~/repos/my-project/.claude/worktrees/feature-auth/   <-- worktree 1
+~/repos/my-project/.claude/worktrees/bugfix-123/     <-- worktree 2
+----
+
+Each directory has its own files and branch. Edits in one directory do not appear in the others.
+
+== Steps Overview
+
+. Understand Git Worktrees (concept and benefits)
+. Create a Worktree with Claude Code (`claude --worktree`)
+. Configure .worktreeinclude (copy gitignored files)
+. Worktree Settings and Base Branch (worktree.baseRef)
+. Subagent Isolation (isolation: worktree)
+. Cleaning Up Worktrees (manual and automatic)
+
+== Creating Worktrees
+
+=== Basic Syntax
+
+[source,sh]
+----
+claude --worktree feature-auth
+claude -w bugfix-123
+----
+
+This does three things:
+
+. Creates a new worktree at `.claude/worktrees/<name>/`
+. Creates a new branch named `worktree-<name>`
+. Starts Claude Code in that directory
+
+If you omit the name, Claude generates one automatically:
+
+[source,sh]
+----
+claude --worktree
+----
+
+=== During a Session
+
+You can also enter a worktree during an existing session by asking Claude to "work in a worktree" -- it uses the EnterWorktree tool to create one and switch into it.
+
+== .worktreeinclude
+
+A worktree is a fresh checkout. Gitignored files like `.env` or `.env.local` from your main working tree are not present in the new worktree. If your project needs these files to run tests or start a dev server, the worktree session will fail.
+
+Claude Code solves this with `.worktreeinclude`. It works like a reverse .gitignore: you list the gitignored files that should be copied into each new worktree.
+
+Example `.worktreeinclude`:
+
+----
+.env
+.env.local
+config/secrets.json
+----
+
+When Claude creates a worktree, it reads this file and copies each listed file from the main checkout into the new worktree directory.
+
+== Worktree Settings
+
+=== Base Branch Configuration
+
+`worktree.baseRef` controls where new worktrees branch from:
+
+**"fresh" (default)**::
+Branches from `origin/HEAD`, so worktrees start from a clean tree matching the remote. If no remote is configured or the fetch fails, falls back to local HEAD.
+
+**"head"**::
+Branches from your current local HEAD, carrying unpushed commits and feature-branch state. Useful when subagents need to operate on in-progress work.
+
+Set it in settings:
+
+[source,json]
+----
+{
+  "worktree": {
+    "baseRef": "head"
+  }
+}
+----
+
+=== PR-Based Worktrees
+
+You can create a worktree from a pull request:
+
+[source,sh]
+----
+claude --worktree "#1234"
+----
+
+This fetches `pull/1234/head` from origin and creates the worktree at `.claude/worktrees/pr-1234`. Useful for reviewing PRs in isolation.
+
+== Subagent Isolation
+
+The most powerful use of worktrees is with subagents. When Claude delegates work to a subagent (the Task tool), that subagent normally runs in the same directory and edits the same files.
+
+With worktree isolation, each subagent gets its own temporary worktree. This means a top-level Claude session can delegate to multiple parallel subagents, each editing files independently, without conflicts.
+
+=== Enabling Subagent Isolation
+
+**During a session**::
+"Use worktrees for your agents" -- Claude will create isolated worktrees for each subagent.
+
+**In an agent definition**::
++
+----
+---
+name: Feature Builder
+description: Builds features in isolation
+isolation: worktree
+---
+
+Build the requested feature. Create a new branch, implement
+the changes, and run tests before reporting back.
+----
++
+The `isolation: worktree` line in the frontmatter tells Claude to provision a fresh worktree for each invocation of this agent.
+
+== Cleanup
+
+=== Automatic Cleanup
+
+**Session exit**::
+* No uncommitted changes, no untracked files, no new commits: the worktree and its branch are removed automatically
+* If the session has a name, Claude prompts instead so you can keep the worktree for later
+* If changes exist, Claude prompts you to keep or remove
+
+**Subagent cleanup**::
+Subagent worktrees orphaned by a crash are removed at startup once they exceed the `cleanupPeriodDays` setting, provided they have no uncommitted changes, untracked files, or unpushed commits.
+
+=== Manual Cleanup
+
+List all worktrees::
+[source,sh]
+----
+git worktree list
+----
+
+Remove a specific worktree::
+[source,sh]
+----
+git worktree remove .claude/worktrees/<name>
+----
+
+Force-remove (discards changes)::
+[source,sh]
+----
+git worktree remove --force .claude/worktrees/<name>
+----
+
+Prune stale references::
+[source,sh]
+----
+git worktree prune
+----
+
+== When to Use Worktrees
+
+* Parallel feature work (two features at once)
+* PR reviews in isolation (`claude --worktree "#1234"`)
+* Subagent safety (`isolation: worktree` in agent definitions)
+* Any time you want edits in one session to stay out of another
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-22-git-worktrees
+----
+
+The interactive module includes:
+
+* Preflight checks for existing worktrees
+* Creating and verifying worktree isolation
+* Configuring .worktreeinclude
+* Understanding cleanup patterns
+* A hands-on challenge: create a worktree, verify isolation, and clean up
+* Challenge verification with automated checks

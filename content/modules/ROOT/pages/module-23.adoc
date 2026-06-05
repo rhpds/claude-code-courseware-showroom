@@ -1,0 +1,347 @@
+= Module 23: Background Agents & Goal Mode
+:navtitle: 23. Background Agents & Goal Mode
+:description: Run Claude Code tasks in the background and set outcome-based goals.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Run Claude Code tasks in the background, monitor them from a dashboard, and set outcome-based goals that Claude works toward autonomously.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-23-background-agents-goal-mode
+----
+====
+
+== What You Will Learn
+
+* Starting and detaching background sessions
+* Agent view -- the session dashboard
+* Managing background sessions (resume, stop, respawn)
+* Goal mode -- outcome-driven autonomy
+* Loop mode -- recurring tasks
+* Composing patterns for fully autonomous workflows
+
+== Key Concepts
+
+Background sessions let you kick off work and keep using your terminal. Agent view is a full-screen dashboard showing all your sessions. Goal mode (/goal) tells Claude to keep working until a condition is met. Loop mode (/loop) runs recurring tasks on an interval.
+
+These compose: worktree + background + goal = fully autonomous feature work.
+
+== Steps Overview
+
+. Background sessions (start, detach, persist)
+. Agent view (dashboard and navigation)
+. Managing background sessions (resume, stop, respawn)
+. Goal mode (outcome-driven autonomy)
+. Loop mode (recurring tasks)
+. Composing patterns (worktree + background + goal)
+
+== Background Sessions
+
+Background sessions let you start a Claude Code task and keep using your terminal. The session runs via a supervisor process and survives terminal closure.
+
+=== Three Ways to Start
+
+**From the command line**::
+[source,sh]
+----
+claude --bg "your prompt here"
+----
++
+This starts a new session in the background with the given prompt. You get a session ID back immediately and can continue working.
+
+**Send current session to background**::
+Type `/bg` in an interactive session. The session moves to the background. You can resume it later.
+
+**Detach with left-arrow on empty prompt**::
+When your input line is empty, press the left arrow key. This detaches the current session without stopping it.
+
+Background sessions persist through terminal closure because they run via a supervisor process.
+
+== Agent View
+
+Agent view is a full-screen terminal dashboard that shows all your Claude Code sessions -- running, waiting for input, completed, or failed.
+
+Launch it with:
+
+[source,sh]
+----
+claude agents
+----
+
+=== Dashboard States
+
+The dashboard groups sessions by state:
+
+**Working**:: actively processing
+**Needs input**:: waiting for approval or a question answered
+**Idle**:: ready but not doing anything
+**Completed**:: finished successfully
+**Failed**:: exited with an error
+**Stopped**:: manually stopped
+
+Each session shows:
+
+* Session ID and working directory
+* Current status and what it's doing
+* Time elapsed
+* PR status indicators (if it created a PR): Draft, Open, Merged, or CI status
+
+=== Key Bindings
+
+[cols="1,3"]
+|===
+| Key | Action
+
+| Up/Down | Navigate between sessions
+| Enter | Open/resume the selected session
+| d | Show session details
+| s | Stop a session
+| r | Respawn a stopped/failed session
+| q | Quit agent view (sessions keep running)
+|===
+
+Agent view is read-only for most operations -- it monitors and lets you jump into sessions. You can approve tool-use requests directly from the dashboard when a session is in "Needs input" state.
+
+== Managing Background Sessions
+
+=== Resume a Session
+
+[source,sh]
+----
+claude resume                  # resume picker UI (interactive list)
+claude resume SESSION_ID       # resume a specific session
+/resume                        # from inside Claude Code
+----
+
+The resume picker shows all sessions and lets you select one. This is the easiest way when you have multiple sessions.
+
+=== Stop a Session
+
+[source,sh]
+----
+claude sessions stop SESSION_ID    # stop a specific session
+claude sessions stop --all         # stop all sessions
+----
+
+Stopped sessions can be respawned.
+
+=== Respawn After Sleep/Shutdown
+
+[source,sh]
+----
+claude respawn --all
+----
+
+When your machine sleeps or shuts down, background sessions stop. The respawn command restarts them from where they left off. This is useful when you start your workday -- respawn everything and check agent view.
+
+== Goal Mode
+
+Goal mode tells Claude to keep working until a condition is met. Instead of a single prompt-response turn, Claude evaluates after each action whether the goal has been achieved.
+
+=== Start Goal Mode
+
+[source,sh]
+----
+/goal "all tests pass"
+----
+
+This sets a goal condition. After every tool call, an evaluator checks whether the condition is satisfied. The evaluator uses Haiku by default (fast and cheap) to assess the goal state.
+
+=== How Goal Evaluation Works
+
+. Claude performs an action (edit, run tests, etc.)
+. The evaluator checks: "Is the goal met?"
+. If no → Claude plans and takes the next action
+. If yes → Claude stops and reports success
+
+=== Goal Mode Contexts
+
+**Interactive**::
+`/goal "condition"` in a live session
+
+**Headless**::
+`claude -p "fix X" --goal "all tests pass"`
+
+**Background**::
+`claude --bg --goal "condition" "prompt"`
+
+=== Safety Limits
+
+[source,sh]
+----
+--max-turns N         # stop after N turns (default: no limit)
+--max-time-minutes N  # stop after N minutes
+/goal clear           # cancel the current goal
+----
+
+The evaluator is conservative. It checks tool output and conversation state, not just whether Claude says the goal is met. This prevents false positives where Claude claims success but the tests still fail.
+
+=== Example Use Cases
+
+[source,sh]
+----
+# Fix failing tests
+claude -p "fix the failing tests" --goal "all tests pass"
+
+# Refactor until clean
+claude -p "refactor auth module" --goal "no lint warnings"
+
+# Complete a feature
+claude -p "implement user search" --goal "search works and has tests"
+----
+
+The key insight: goal mode shifts Claude from "answer this question" to "achieve this outcome." It will try multiple approaches, debug failures, and iterate until the condition is met or limits are reached.
+
+== Loop Mode
+
+Loop mode repeats a task on a fixed interval. It is useful for monitoring and polling workflows.
+
+=== Start a Loop
+
+[source,sh]
+----
+/loop 5m "check deploy status and report any errors"
+/loop 10m "run the test suite and summarize results"
+/loop 1h "check for new Jira issues assigned to me"
+----
+
+Format: `/loop INTERVAL "prompt"`
+
+* Interval: Nm (minutes) or Nh (hours)
+* Default interval: 10 minutes (if you omit the time)
+
+=== Loop Characteristics
+
+* Session-scoped: dies when the session closes
+* Maximum 50 active loop tasks per session
+* 7-day expiry: loops automatically stop after 7 days
+* Each iteration runs the prompt as a fresh task
+* Results accumulate in the session history
+
+=== Good Use Cases
+
+* Deploy monitoring: `/loop 5m "check pod status in staging"`
+* Test watching: `/loop 10m "run tests and flag new failures"`
+* Service health: `/loop 15m "curl health endpoints and report"`
+* PR status: `/loop 30m "check CI status on open PRs"`
+
+=== Stop a Loop
+
+[source,sh]
+----
+/loop stop             # stop all loops in this session
+/loop stop LOOP_ID     # stop a specific loop
+/loop list             # show active loops
+----
+
+== Composing Patterns
+
+The real power comes from composing these features together. Each feature solves one problem; combined, they enable fully autonomous workflows.
+
+=== Pattern 1: Background + Goal
+
+Run a task in the background that keeps working until done.
+
+[source,sh]
+----
+claude --bg --goal "all tests pass" "fix the failing integration tests"
+----
+
+This starts a background session with a goal. Claude will edit code, run tests, see failures, fix them, and repeat until all tests pass. Meanwhile, you keep working in your terminal.
+
+=== Pattern 2: Worktree + Background
+
+Isolate work in a separate branch while keeping your main workspace clean.
+
+[source,sh]
+----
+claude --worktree --bg "refactor the auth module to use JWT"
+----
+
+This creates a git worktree (isolated branch + working directory), then runs the task in the background. Your current branch is untouched.
+
+=== Pattern 3: Worktree + Background + Goal (Full Autonomy)
+
+The complete pattern for autonomous feature work.
+
+[source,sh]
+----
+claude --worktree --bg --goal "all tests pass" \
+  "fix the failing integration tests"
+----
+
+This:
+
+. Creates a worktree with a new branch
+. Starts a background session in that worktree
+. Works autonomously until all tests pass
+. You monitor progress in agent view
+
+When it completes, you review the changes in the worktree, merge if satisfied, or give further instructions.
+
+=== Pattern 4: Multiple Autonomous Agents
+
+Start several background+goal sessions for independent tasks.
+
+[source,sh]
+----
+claude --worktree --bg --goal "lint passes" "fix lint warnings in src/"
+claude --worktree --bg --goal "tests pass" "add missing test coverage"
+claude --worktree --bg --goal "no TODOs remain" "resolve all TODO comments"
+----
+
+Each runs in its own worktree on its own branch. Monitor all of them in agent view. Merge the results independently.
+
+=== When to Use Which Pattern
+
+[cols="1,2"]
+|===
+| Use Case | Pattern
+
+| Quick task, stay in terminal
+| `claude --bg "prompt"`
+
+| Long task, need outcome
+| `claude --bg --goal "X" "prompt"`
+
+| Risky changes, want isolation
+| `claude --worktree --bg "prompt"`
+
+| Full autonomy
+| `claude --worktree --bg --goal "X" "prompt"`
+
+| Recurring check
+| `/loop Nm "prompt"`
+|===
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Claude Code v2.1.139 or later (for agent view and goal mode)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-23-background-agents-goal-mode
+----
+
+The interactive module includes:
+
+* Starting and detaching background sessions
+* Using agent view to monitor progress
+* Setting and clearing goals
+* Running loop tasks
+* Composing worktree + background + goal
+* A hands-on challenge: start a background code quality review and monitor it
+* Challenge verification with session status checks
