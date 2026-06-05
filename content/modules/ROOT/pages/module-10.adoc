@@ -1,0 +1,105 @@
+= Module 10: Hooks
+:navtitle: 10. Hooks
+:description: Create pre- and post-command hooks for guardrails and automation.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Create pre- and post-command hooks that run automatically when Claude Code executes tools, giving you guardrails and automation. Hooks are shell commands that Claude Code runs automatically before or after tool calls. They let you add guardrails, logging, and automation without modifying Claude's behavior directly.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-10-hooks
+----
+====
+
+== What You Will Learn
+
+* What hooks are and when they fire
+* Writing a PreToolUse hook (guardrail)
+* Writing a PostToolUse hook (automation)
+* Hook configuration in settings.json
+* Event types and matchers
+* Hook scope (global, project, local)
+
+== Key Concepts
+
+=== Hook Events
+
+Claude Code hooks fire at specific events:
+
+* *PreToolUse* -- runs BEFORE a tool is executed. Can block the action (exit non-zero = blocked)
+* *PostToolUse* -- runs AFTER a tool completes. Gets the tool result, can log or react
+* *Notification* -- runs when Claude sends a notification (e.g., background task complete)
+* *Stop* -- runs when Claude finishes a response
+* *SubagentStop* -- runs when a subagent completes
+
+=== Hook Configuration
+
+Hook config goes in:
+
+* `~/.claude/settings.json` -- global (all projects)
+* `.claude/settings.json` -- project (this repo only)
+* `.claude/settings.local.json` -- project-local (gitignored)
+
+Each hook has:
+
+* `matcher` -- which tool to match (regex or exact)
+* `command` -- shell command to run
+* `timeout` -- max execution time (ms, default 60000)
+
+=== Hook Input and Output
+
+Hooks receive tool input as JSON on stdin. The JSON includes:
+
+* `tool_name` -- the name of the tool being invoked
+* `tool_input` -- the parameters passed to the tool
+* `tool_result` -- (PostToolUse only) the result from the tool
+
+For PreToolUse hooks:
+
+* Exit 0 = allow the action to proceed
+* Exit 2 = block the action (Claude will see an error)
+
+For PostToolUse hooks:
+
+* Exit code is ignored
+* Hook is for logging/notification, not blocking
+
+=== Common Hook Patterns
+
+* Block dangerous commands (force push, rm -rf /)
+* Audit trail of all file modifications
+* Auto-lint after code changes
+* Notify on long-running operations
+* Enforce naming conventions
+
+== Steps Overview
+
+. Understand hook events and configuration
+. Write a PreToolUse hook that blocks destructive git commands
+. Write a PostToolUse hook that logs file modifications
+. Register hooks in settings.json
+. Test the hooks
+. Verify all checks pass
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-10-hooks
+----
+
+The interactive module will guide you through creating guardrail and logging hooks, registering them in settings, and testing them. You'll complete a challenge to create your own hook for either a custom guardrail or an automation workflow.

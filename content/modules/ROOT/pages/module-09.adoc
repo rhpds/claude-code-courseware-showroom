@@ -1,0 +1,109 @@
+= Module 09: Writing Custom Skills
+:navtitle: 09. Writing Custom Skills
+:description: Create reusable Claude Code skills with slash commands and auto-triggering.
+
+[.module-meta]
+Estimated time: 20 minutes | Prerequisites: Module 01
+
+Create Claude Code skills -- reusable, shareable instructions that run as slash commands or get triggered automatically. A skill is a markdown file (SKILL.md) that teaches Claude Code how to perform a specific task. Skills can run as slash commands, get triggered by keywords in conversation, run as subagents to save context and cost, and route to cheaper models for mechanical tasks.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-09-writing-custom-skills
+----
+====
+
+== What You Will Learn
+
+* Skill anatomy -- SKILL.md frontmatter and body
+* Installation locations -- global skills vs project commands
+* Slash command invocation and keyword-triggered auto-activation
+* Subagent delegation for cost savings
+* Model routing (Opus/Sonnet/Haiku) based on task complexity
+* Skill budget and diagnostics
+* Packaging skills as plugins for team distribution
+
+== Key Concepts
+
+=== SKILL.md Structure
+
+Every skill is a directory containing a SKILL.md file with two parts: YAML frontmatter (metadata) and the body (instructions).
+
+Frontmatter fields:
+
+* `name` -- required, kebab-case identifier
+* `description` -- required, tells Claude when to activate the skill
+* `agent` -- optional, `true` = run in a subagent (saves context/cost)
+* `model` -- optional, `sonnet` or `haiku` (only works with `agent: true`)
+* `disable-model-invocation` -- optional, `true` = skill can ONLY be invoked manually via /skillname, never auto-triggered by conversation keywords
+
+=== Installation Locations
+
+Skills can be installed in two places:
+
+* *Global skills*: `~/.claude/skills/NAME/SKILL.md` -- Available across all projects, triggered by keywords in conversation
+* *Project commands*: `.claude/commands/NAME.md` -- Scoped to the project, invoked via /NAME
+
+Skills can include reference files alongside SKILL.md that the skill can read with relative paths.
+
+=== Subagent Delegation
+
+The most powerful skill feature is subagent delegation. When a skill has `agent: true`, it runs in a separate context window. This means:
+
+* The skill's work doesn't fill up the main conversation context
+* You can route it to a cheaper model (Sonnet or Haiku)
+* The parent only sees the final result, not every intermediate step
+
+=== Model Routing
+
+* `model: haiku` -- cheapest, fastest. Use for mechanical tasks, text extraction, formatting
+* `model: sonnet` -- mid-tier, good reasoning. Use for analysis, code review, search, summarization
+* (no model line) -- uses parent model (Opus). Use for complex reasoning, planning, architecture
+
+=== Unified Skills Model
+
+Since v2.1.101 (April 2026), Claude Code uses a unified skills model:
+
+* Skills with a description are eligible for auto-invocation -- Claude reads the description and activates the skill when conversation context matches
+* Skills can ALSO be invoked manually via /skillname (same as commands)
+* If a skill and command share the same name, the skill takes precedence
+* Set `disable-model-invocation: true` to prevent auto-invocation
+
+=== Skill Budget
+
+Claude Code allocates about 1% of the context window as the skill budget. When installed skills exceed this budget, Claude uses frequency-based trimming to fit.
+
+If skills aren't activating or behaving oddly, run `/doctor` to check for skill budget issues. Options to fix:
+
+* Remove skills you don't use (fewer skills = more budget per skill)
+* Add `disable-model-invocation: true` to skills that don't need auto-triggering
+
+== Steps Overview
+
+. Understand skill anatomy -- frontmatter and body structure
+. Learn installation locations -- global vs project
+. Write a session-summary skill with subagent delegation
+. Examine the skill ecosystem and design guidelines
+. Understand skill budget and diagnostics
+. Learn about packaging skills as plugins
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-09-writing-custom-skills
+----
+
+The interactive module will guide you through creating your own skill, installing it, and testing it. You'll complete a challenge to create a file-stats skill that uses model routing to Haiku for mechanical counting tasks.

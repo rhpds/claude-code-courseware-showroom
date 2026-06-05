@@ -1,0 +1,116 @@
+= Module 21: Plugin Marketplace
+:navtitle: 21. Plugin Marketplace
+:description: Discover, install, and manage Claude Code plugins from marketplace registries.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01, Module 09 recommended
+
+Discover, install, and manage Claude Code plugins from marketplace registries. When complete, you'll have marketplaces configured, understand how to evaluate plugins, and know how to install, inspect, and remove them.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-21-plugin-marketplace
+----
+====
+
+== What You Will Learn
+
+* Plugins vs skills vs MCP servers -- what's what
+* Browsing available plugins
+* Installing a plugin from a marketplace
+* Inspecting installed plugins
+* Removing a plugin
+* Plugin structure and versioning
+
+== Key Concepts
+
+=== Plugins vs Skills vs MCP Servers
+
+Three ways to extend Claude Code:
+
+* *Skills* -- A single SKILL.md file in a named directory. Teaches Claude a repeatable workflow. Location: `~/.claude/skills/<name>/SKILL.md` (global) or `.claude/commands/<name>.md` (project). Example: /quick-deck generates a branded HTML presentation.
+
+* *Plugins* -- A package containing: plugin.json manifest + one or more skills + optional MCP servers + optional hooks + optional agent definitions. Versioned, updatable, distributable via marketplaces. Location: `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`. Example: superpowers plugin provides TDD, debugging, and collaboration skills as a coordinated package.
+
+* *MCP Servers* -- A running process that gives Claude structured access to an external system (Git, Jira, Playwright, etc.). Configured in `~/.claude/settings.json` under `mcpServers`. Example: @modelcontextprotocol/server-git provides git_status, git_log, git_diff tools.
+
+Key differences:
+
+* Skills are standalone files. Plugins bundle multiple skills.
+* MCP servers are running processes. Plugins can include MCP servers.
+* Skills and MCP servers can exist without plugins.
+* Plugins add discoverability, versioning, and one-command install.
+
+=== Marketplaces
+
+Marketplaces are GitHub repos with a manifest listing available plugins. When you add a marketplace, Claude Code clones it and reads the plugin catalog.
+
+You can add multiple marketplaces -- your team might have a private one alongside the official Anthropic marketplace.
+
+To add a marketplace:
+
+[source,sh]
+----
+claude plugin add github:anthropics/claude-plugins-official
+----
+
+=== Plugin Structure
+
+Each plugin lives in `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`.
+
+Inside you'll find:
+
+* `plugin.json` -- manifest with name, description, version
+* `skills/` -- SKILL.md files that become available as slash commands
+* `.claude/` -- optional agents, hooks, and other config
+
+Skills from installed plugins appear in your /slash command list automatically.
+
+=== Installation Patterns
+
+[source,sh]
+----
+# Install a plugin from a known marketplace
+claude plugin add github:anthropics/claude-plugins-official
+
+# Install a specific plugin
+claude plugin add frontend-design
+
+# Remove a plugin
+claude plugin remove frontend-design
+
+# List installed plugins
+claude plugin list
+----
+
+== Steps Overview
+
+. Understand the difference between plugins, skills, and MCP servers
+. Browse available plugins from configured marketplaces
+. Install a plugin and verify installation
+. Inspect plugin contents (skills, agents, hooks)
+. Remove a plugin
+. Understand plugin versioning and updates
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 09 recommended (Writing Custom Skills)
+* GitHub access (for marketplace repos)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-21-plugin-marketplace
+----
+
+The interactive module will guide you through adding a marketplace, installing a plugin, inspecting its contents, and removing it. You'll complete a challenge to explore a plugin you haven't used before and document its skills and agents.
