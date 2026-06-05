@@ -1,0 +1,140 @@
+= Module 19: Red Hat Quick Deck
+:navtitle: 19. Quick Deck
+:description: Generate branded HTML slide presentations with Claude Code.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01, GitHub access to rhpds org
+
+Install the Red Hat Quick Deck skill so Claude Code can generate branded HTML slide presentations on any topic.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-19-red-hat-quick-deck
+----
+====
+
+== What You Will Learn
+
+* Clone the red-hat-quick-deck repository
+* Install the skill into Claude Code
+* Tour the skill capabilities
+* Create your first presentation
+
+== Key Concepts
+
+=== What Quick Deck Produces
+
+When you ask Claude to create a "quick deck", you get:
+
+* A single `.html` file and a `.md` companion
+* The HTML is completely self-contained — inline CSS, inline JS, fonts and design tokens loaded from CDN
+* Open it in any browser, email it, or host it anywhere
+
+=== How to Invoke
+
+After installing the skill and restarting Claude Code, ask for a presentation:
+
+* "Create a quick deck about Kubernetes operators"
+* "Make a presentation on our workshop intake process"
+* "Build a brief deck for my team meeting"
+
+=== What Claude Does
+
+. Asks your preferred visual mode (Dark, Light, or Expressive Dark)
+. Chooses a story arc (Problem/Resolution, Myth-Busting, or Journey)
+. Writes slide headlines first (the headlines tell the full story)
+. Generates the complete HTML deck with Red Hat branding
+
+=== Key Features
+
+*Navigation*
+
+Arrow keys, spacebar, or click to advance
+
+*Notes panel*
+
+Press N to see references and context per slide
+
+*Slide types*
+
+Title, Content, Big Number, Comparison, Architecture, Quote, Call-to-Action, Thank You
+
+*PDF export*
+
+Cmd+P / Ctrl+P to save as PDF (dark decks auto-switch to light palette for print)
+
+*Media*
+
+Videos (YouTube, direct URL) and images can be added after initial generation
+
+*Mobile*
+
+Responsive and touch-enabled for async viewing
+
+=== Color Modes
+
+*Core Dark*
+
+Black backgrounds, cinematic feel (default)
+
+*Core Light*
+
+White backgrounds, clean for print/email
+
+*Expressive Dark*
+
+Purple/teal accents alongside Red Hat red
+
+=== Installation Steps
+
+. Clone the repository:
++
+[source,sh]
+----
+mkdir -p ~/repos
+git clone https://github.com/rhpds/red-hat-quick-deck.git ~/repos/red-hat-quick-deck
+----
+
+. Install the skill:
++
+[source,sh]
+----
+mkdir -p ~/.claude/skills
+ln -sfn ~/repos/red-hat-quick-deck ~/.claude/skills/red-hat-quick-deck
+----
+
+. Restart Claude Code to discover the new skill
+
+. Test by asking: "Create a quick deck about [topic]"
+
+== External Dependencies
+
+This module depends on services outside your local environment:
+
+*Private GitHub repository*
+
+`rhpds/red-hat-quick-deck` is a private repo in the rhpds GitHub organization. You need org membership to clone it.
+
+*Red Hat brand assets*
+
+The skill references Red Hat fonts and design tokens loaded from CDN at presentation viewing time. The generated HTML files require internet access to render properly.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* GitHub access to rhpds organization
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-19-red-hat-quick-deck
+----

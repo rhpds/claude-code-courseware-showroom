@@ -1,0 +1,188 @@
+= Module 20: Hivemind Knowledge Base
+:navtitle: 20. Hivemind
+:description: Contribute to and search the team's shared knowledge base.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01, GitHub access to rhpds org
+
+NOTE: RHDP Team only — requires access to the rhpds GitHub org.
+
+Contribute to and search the team's shared Hivemind knowledge base.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-20-hivemind-knowledge-base
+----
+====
+
+== What You Will Learn
+
+* How the Hivemind is structured
+* Setting up the local clone and preferences
+* Writing an article with hivemind-write
+* Searching with hivemind-query
+* Tags and cross-references
+
+== Key Concepts
+
+=== Hivemind Structure
+
+The Hivemind is the RHDP team's shared knowledge base, stored as Obsidian-compatible markdown files in a GitHub repository.
+
+[source]
+----
+github.com/rhpds/hivemind
+└── vault/
+    ├── templates/
+    │   └── article.md           # template for new articles
+    ├── team_docs/               # canonical team documentation
+    │   ├── maas-documentation.md
+    │   └── ...
+    └── people/
+        ├── alice/               # each contributor has a folder
+        │   ├── ocp-module-fix.md
+        │   └── antora-build-issue.md
+        ├── bob/
+        │   └── jurassic-tool-overview.md
+        └── ...
+----
+
+Key principles:
+
+* Every article is a standalone markdown file
+* Articles use YAML frontmatter for metadata (author, date, tags, type)
+* Cross-references use Obsidian `[[wikilinks]]`
+* Tags use `#hashtag` format in the frontmatter
+* `team_docs/` is canonical (authoritative reference)
+* `people/` is per-contributor (individual discoveries and fixes)
+
+=== Article Format
+
+Example article:
+
+[source,md]
+----
+---
+author: Alice
+date: 2025-04-15
+project: agnosticd
+type: fix
+tags: [ocp, idp, certificates]
+---
+
+# IdP Certificate Rotation Fix
+
+Fixed the recurring IdP certificate expiration issue in OCP clusters
+provisioned through AgnosticD.
+
+## Details
+
+The root cause was...
+
+## Links
+
+- [[maas-documentation]] — related MaaS docs
+- https://github.com/rhpds/agnosticd/pull/1234
+----
+
+Article types: feature, fix, tool, decision, issue, knowledge
+
+=== Installation Steps
+
+. Clone the hivemind repository:
++
+[source,sh]
+----
+git clone https://github.com/rhpds/hivemind ~/repos/hivemind
+----
+
+. Install the skills:
++
+[source,sh]
+----
+mkdir -p ~/.claude/skills
+ln -s ~/repos/hivemind/.claude/skills/hivemind-write ~/.claude/skills/hivemind-write
+ln -s ~/repos/hivemind/.claude/skills/hivemind-query ~/.claude/skills/hivemind-query
+----
+
+. Set up preferences:
++
+[source,sh]
+----
+mkdir -p ~/.config/hivemind
+cat > ~/.config/hivemind/hivemind-preferences.md << 'EOF'
+---
+clone_path: ~/repos/hivemind
+default_folder: vault/people/YOUR_NAME
+---
+EOF
+----
+
+. Restart Claude Code
+
+=== Using the Skills
+
+*hivemind-write*
+
+Contribute articles from any project:
+
+* "Write to hivemind"
+* "Share with the team"
+
+Claude gathers context from your current session automatically.
+
+*hivemind-query*
+
+Search across all team knowledge:
+
+* "Has anyone documented the IdP cert fix?"
+* "What has the team been working on this week?"
+* "Search the hivemind for Babylon core"
+
+Search signal priority:
+
+. Canonical `team_docs` (authoritative reference)
+. Article content (full-text search)
+. Tags (topic discovery)
+. Git history (time-based queries)
+. Wikilinks (related content traversal)
+. External sources (GitHub, Confluence)
+
+=== Tags and Cross-References
+
+Tags are how the Hivemind connects related articles across contributors. When you write an article, reuse existing tags whenever possible. Only create new tags when nothing existing fits.
+
+Cross-references use Obsidian `[[wikilinks]]` to connect related articles. The hivemind-query skill follows these links to find related content.
+
+== External Dependencies
+
+This module depends on services outside your local environment:
+
+*Private GitHub repository*
+
+`rhpds/hivemind` is a private repo in the rhpds GitHub organization. You need org membership to clone it.
+
+*Git push access*
+
+Writing articles requires push access to the hivemind repo. The hivemind-write skill commits and pushes on your behalf.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* GitHub access to rhpds organization
+* Git push access to rhpds/hivemind
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-20-hivemind-knowledge-base
+----
