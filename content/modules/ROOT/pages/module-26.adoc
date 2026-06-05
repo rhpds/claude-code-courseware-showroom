@@ -1,0 +1,202 @@
+= Module 26: Claude Agent SDK
+:navtitle: 26. Claude Agent SDK
+:description: Build programmatic AI agents using the Claude Agent SDK.
+
+[.module-meta]
+Estimated time: 25 minutes | Prerequisites: Module 01, Module 11 recommended
+
+Build programmatic AI agents using the Claude Agent SDK -- the same engine that powers Claude Code, available as a Python and TypeScript library.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-26-claude-agent-sdk
+----
+====
+
+== What You Will Learn
+
+* What the Agent SDK is and how it relates to Claude Code
+* Installing the Python SDK
+* Agent SDK vs Client SDK -- when to use each
+* Building your first agent
+* Key primitives: tools, hooks, MCP, subagents
+* Production patterns: permissions, sessions, error handling
+* Headless execution with `claude -p`
+
+== Key Concepts
+
+The Claude Agent SDK is a Python and TypeScript library that wraps the Claude Code CLI as a subprocess. It gives you programmatic access to the same tools, agent loop, and context management that power Claude Code.
+
+=== How It Works
+
+----
+Your script          Agent SDK           Claude Code (subprocess)
+-----------          ---------           ------------------------
+query(prompt)   ->   Launches CLI   ->   Claude thinks, calls tools
+               <-   Streams msgs   <-   Returns results
+                    (async for)
+----
+
+The SDK handles:
+
+* Spawning the Claude Code process
+* Serializing prompts and options
+* Streaming messages back as Claude works
+* Tool execution (Claude runs the tools directly)
+* Session management and context
+
+You just write a prompt and iterate over the results.
+
+=== Agent SDK vs Client SDK
+
+There are two Anthropic SDKs. They solve different problems:
+
+**Agent SDK (`claude-agent-sdk`)**::
+* Claude handles tool execution autonomously
+* Built-in tools: Read, Write, Edit, Bash, Glob, Grep, WebSearch
+* You write a prompt, Claude figures out the rest
+* Best for: CI/CD bots, code review, batch processing, internal tools
+
+**Client SDK (`anthropic`)**::
+* You implement tool execution yourself
+* Direct Messages API access
+* You define tools, handle the tool loop, parse results
+* Best for: chatbots, RAG, custom tool implementations, fine control
+
+Rule of thumb::
+* Need Claude to act on files, run commands, edit code? Agent SDK.
+* Need direct API access with your own tools? Client SDK.
+* Building a chatbot or RAG pipeline? Client SDK.
+* Automating code reviews or CI checks? Agent SDK.
+
+=== Key Primitives
+
+**Tools**::
+Built-in tools (Read, Write, Edit, Bash) and custom tools via MCP. Control access with `allowed_tools` and `permission_mode`.
+
+**Hooks**::
+Lifecycle callbacks (PreToolUse, PostToolUse, Stop, SessionStart, SessionEnd) for validation, audit trails, and custom logic.
+
+**MCP Integration**::
+Connect external MCP servers just like in Claude Code settings. Access databases, browsers, APIs, or custom servers.
+
+**Subagents**::
+Spawn specialized child agents for focused subtasks. Include "Agent" in `allowed_tools` to auto-approve subagent invocations.
+
+== Steps Overview
+
+. What the Agent SDK is
+. Install the Python SDK
+. Agent SDK vs Client SDK
+. Build your first agent
+. Key primitives (tools, hooks, MCP, subagents)
+. Production patterns (least privilege, validation, sessions, errors)
+. Headless execution with `claude -p`
+
+== Production Patterns
+
+=== Principle of Least Privilege
+
+Only allow the tools your agent actually needs:
+
+[source,python]
+----
+# Read-only analysis agent
+ClaudeAgentOptions(
+    allowed_tools=["Read", "Glob", "Grep"],
+    permission_mode="dontAsk",
+)
+
+# Code modification agent (scoped)
+ClaudeAgentOptions(
+    allowed_tools=["Read", "Edit", "Glob"],
+    permission_mode="acceptEdits",
+)
+----
+
+=== Hook-Based Validation
+
+Use PreToolUse hooks to enforce guardrails:
+
+[source,python]
+----
+async def block_dangerous_commands(input_data, tool_use_id, ctx):
+    cmd = input_data.get("tool_input", {}).get("command", "")
+    if any(word in cmd for word in ["rm -rf", "sudo", "chmod 777"]):
+        return {"decision": "block", "reason": "Blocked dangerous command"}
+    return {}
+
+options = ClaudeAgentOptions(
+    hooks={"PreToolUse": [HookMatcher(matcher="Bash", hooks=[block_dangerous_commands])]},
+)
+----
+
+=== Session Management
+
+Continue conversations across multiple queries:
+
+[source,python]
+----
+# First query -- capture session ID
+session_id = None
+async for msg in query(prompt="Read the config files", options=opts):
+    if isinstance(msg, SystemMessage) and msg.subtype == "init":
+        session_id = msg.data["session_id"]
+
+# Second query -- resume with full context
+async for msg in query(
+    prompt="Now check for misconfigurations",
+    options=ClaudeAgentOptions(resume=session_id),
+):
+    ...
+----
+
+== Headless Execution
+
+For CI/CD and automation, you can run Claude as a one-shot command without the Agent SDK -- just the CLI:
+
+[source,sh]
+----
+claude -p "Review this code for bugs" --output-format json
+----
+
+This is the simplest path for GitHub Actions workflows, pre-commit hooks, and batch processing scripts.
+
+Key flags::
+* `-p "prompt"` -- run non-interactively with this prompt
+* `--output-format json` -- return structured JSON output
+* `--json-schema FILE` -- validate output against a JSON schema
+* `--allowedTools TOOLS` -- restrict which tools the agent can use
+* `--max-turns N` -- limit the number of tool calls
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 11 recommended (Building MCP Servers)
+* Python 3.10+ installed
+* pip for package management
+* An Anthropic API key or Vertex AI configured
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-26-claude-agent-sdk
+----
+
+The interactive module includes:
+
+* Installing the Python SDK
+* Building a file scanner agent
+* Learning key primitives with code examples
+* Production patterns and best practices
+* A hands-on challenge: build a Python agent that scans for .py files, counts lines and TODOs, and produces a JSON report
+* Challenge verification with automated checks

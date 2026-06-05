@@ -1,0 +1,118 @@
+= Module 12: Review Agents
+:navtitle: 12. Review Agents
+:description: Use Claude Code's agent system to run specialized code reviews and create custom review agent definitions.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01, Module 09 recommended
+
+Use Claude Code's built-in agent system to run specialized code reviews, and create custom review agent definitions. When complete, you'll know how to spawn review agents, write your own agent definitions, and coordinate multiple agents for comprehensive reviews.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-12-review-agents
+----
+====
+
+== What You Will Learn
+
+* How the agent system works (subagents, context isolation, findings)
+* Running built-in security reviews
+* Creating custom review agent definitions
+* Running custom agents
+* Coordinating multiple agents in parallel
+* Understanding the team lead pattern for agent dispatch
+
+== Key Concepts
+
+Claude Code's agent system lets you spawn subagents -- isolated instances that run a focused task and return their findings to the main conversation. This is the same mechanism used by skills with `agent: true`, but applied specifically to code review.
+
+=== How It Works
+
+. The main conversation spawns a subagent with a specific type
+. The subagent runs in its own context window
+. It has access to tools (file reading, search, bash, MCP)
+. It returns structured findings when done
+. The main conversation receives only the results, not the intermediate work -- saving context and cost
+
+=== Built-in Agent Types
+
+**security-reviewer**::
+Focus: authentication, injection, secrets, container security, RBAC, dependency vulnerabilities, unsafe deserialization
+
+**patternfly-ui-ux-reviewer**::
+Focus: PatternFly component usage, accessibility (WCAG), responsive design, UX patterns, design consistency
+
+**devops-platform-engineer**::
+Focus: Dockerfiles, CI/CD pipelines, K8s/OCP manifests, resource limits, deployment strategies, infra-as-code
+
+**container-specialist**::
+Focus: container build optimization, runtime debugging, image size, layer caching, registry operations
+
+=== Custom Agents
+
+You can define your own agents by creating markdown files in `.claude/agents/` directories. These extend the built-in set with project-specific or team-specific review capabilities.
+
+Agent definitions are markdown files with frontmatter and instructions:
+
+----
+---
+name: code-quality-reviewer
+description: Reviews code for quality, naming, complexity, and test coverage
+---
+
+You are a code quality reviewer. Examine the repository and report on:
+1. Naming -- clear and consistent?
+2. Complexity -- functions over 50 lines or 4 levels deep?
+3. Duplication -- repeated code that could be consolidated?
+4. Test coverage -- main paths and edge cases covered?
+5. Error handling -- bare except/catch blocks?
+
+Report findings by severity: Critical, Major, Minor.
+----
+
+== Steps Overview
+
+. Understand the agent system
+. Run a built-in security review
+. Create a custom review agent definition
+. Run the custom agent
+. Coordinate multiple agents in parallel
+
+== Multi-Agent Review Patterns
+
+**Direct parallel**::
+Spawn 2+ agents at the same time. Each runs independently with its own focus area. You get separate findings from each.
+
+**Team lead pattern**::
+A coordinator agent reads changed files, decides which specialists are relevant, and spawns only those. This avoids running agents that have nothing to review.
+
+**Sequential pipeline**::
+One agent identifies risk areas, second agent deep-dives into those specific areas. Good for large codebases where you want to focus effort.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 09 recommended (Writing Custom Skills)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-12-review-agents
+----
+
+The interactive module includes:
+
+* Running the security-reviewer agent
+* Creating a code-quality-reviewer agent definition
+* Coordinating multiple agents in parallel
+* A hands-on challenge: create a docs-reviewer agent and run it
+* Challenge verification with automated checks

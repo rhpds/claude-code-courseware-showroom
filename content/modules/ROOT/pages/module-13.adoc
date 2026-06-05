@@ -1,0 +1,162 @@
+= Module 13: Agent Teams vs Superpowers
+:navtitle: 13. Agent Teams vs Superpowers
+:description: Compare agent review teams and superpowers patterns for multi-agent coordination.
+
+[.module-meta]
+Estimated time: 20 minutes | Prerequisites: Module 01, Module 12 recommended
+
+Compare two approaches to multi-agent coordination in Claude Code: the agent review team pattern (a team-lead dispatches specialist subagents) and the superpowers plugin pattern (fresh subagent per task with two-stage review). When complete, you'll understand both patterns, know when to reach for each, and have run them both against real code.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-13-agent-teams-vs-superpowers
+----
+====
+
+== What You Will Learn
+
+* How each pattern works (architecture and flow)
+* Building a minimal agent review team
+* Running a superpowers-style review
+* Side-by-side comparison on the same codebase
+* Decision framework -- when to use which
+
+== Key Concepts
+
+Both patterns use the same Claude Code Agent tool to spawn subagents. The difference is in how they organize and coordinate the work.
+
+=== Pattern A: Agent Review Team
+
+Architecture::
++
+----
+You (or a team-lead agent)
+  |-- spawns --> security-reviewer
+  |-- spawns --> patternfly-ui-ux-reviewer
+  |-- spawns --> devops-platform-engineer
+  |-- spawns --> code-quality-reviewer (custom)
+  |-- spawns --> docs-reviewer (custom)
+  |
+  Collects all findings --> consolidated report
+----
+
+How it works::
+. A coordinator reads the changed files (git diff, git status)
+. Based on file types and change scope, it decides which specialists are relevant
+. It spawns only the relevant specialists in parallel
+. Each specialist runs independently in its own context
+. The coordinator collects findings and returns a single report
+
+Key characteristics::
+* Review-oriented (reads code, reports findings)
+* Smart routing (only spawns relevant agents)
+* Parallel execution (agents don't depend on each other)
+* Consolidated output (one report with all findings)
+
+=== Pattern B: Superpowers (Subagent-Driven Development)
+
+Architecture::
++
+----
+Controller (you)
+  |-- reads plan
+  |-- for each task:
+  |     |-- spawns --> implementer subagent
+  |     |-- spawns --> spec-compliance reviewer
+  |     |-- spawns --> code-quality reviewer
+  |     |-- marks task complete
+  |-- after all tasks:
+        |-- spawns --> final reviewer
+----
+
+How it works::
+. A plan defines discrete tasks (from the writing-plans skill)
+. For each task, a fresh implementer subagent is dispatched
+. The implementer writes code, tests, and commits
+. A spec-compliance reviewer checks: did the code match the spec?
+. A code-quality reviewer checks: is the implementation clean?
+. If either reviewer finds issues, the implementer fixes them
+. Only after both reviews pass does the next task begin
+
+Key characteristics::
+* Implementation-oriented (writes code, not just reviews)
+* Sequential tasks (one at a time, dependencies respected)
+* Two-stage review gate (spec then quality)
+* Fresh context per task (no cross-contamination)
+* Plan-driven (follows a written implementation plan)
+
+== Steps Overview
+
+. Understand both patterns (architecture and flow)
+. Build a minimal agent review team (3 agents + coordinator)
+. Run the agent team
+. Understand the superpowers approach
+. Run a superpowers-style review (two-stage)
+. Decision framework -- when to use which
+
+== Decision Framework
+
+=== Use Agent Review Team When:
+
+* Reviewing a PR or existing code
+* Running periodic audits
+* You need multiple perspectives on the same code
+* The code already exists and you want feedback
+* You want a one-shot consolidated report
+
+Examples::
+* "Review this PR for security and UI issues"
+* "Audit the deployment configs before release"
+* "Check all modules for template compliance"
+
+=== Use Superpowers When:
+
+* Building a new feature from a plan
+* You want implementation + review in one workflow
+* Tasks are sequential and each builds on the previous
+* You need iterative fix-and-review loops
+* Quality gates must pass before moving forward
+
+Examples::
+* "Implement the auth system from the design spec"
+* "Build all 5 API endpoints from the plan"
+* "Create a new courseware module with all sections"
+
+=== Use Both When:
+
+Building a feature (superpowers) then doing a final sweep (agent team) before merge. The team lead can be the "final reviewer" in the superpowers workflow.
+
+Example workflow::
+. `/superpowers:brainstorming` -- design the feature
+. `/superpowers:writing-plans` -- create the implementation plan
+. `/superpowers:subagent-driven-development` -- build it
+. "run the team" -- agent review team does a final sweep
+. `/superpowers:finishing-a-development-branch` -- wrap up
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 12 recommended (Review Agents)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-13-agent-teams-vs-superpowers
+----
+
+The interactive module includes:
+
+* Creating a 3-agent review team (structure-reviewer, link-checker, team-lead)
+* Running the team coordinator
+* Two-stage review demonstration (spec-compliance then code-quality)
+* A hands-on challenge: run both patterns and compare results
+* Challenge verification with assessment of which pattern fits the use case

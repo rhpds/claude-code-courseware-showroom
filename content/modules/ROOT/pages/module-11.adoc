@@ -1,0 +1,106 @@
+= Module 11: Building MCP Servers
+:navtitle: 11. Building MCP Servers
+:description: Build custom MCP servers in Python that expose tools Claude Code can call.
+
+[.module-meta]
+Estimated time: 30 minutes | Prerequisites: Module 01, Module 04 recommended
+
+Build a custom MCP server in Python that exposes tools Claude Code can call, then register and use it from inside a Claude Code session. Learn the MCP protocol, FastMCP SDK, tool registration, streamable HTTP transport, and MCP elicitation.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-11-building-mcp-servers
+----
+====
+
+== What You Will Learn
+
+* How MCP servers work (JSON-RPC over stdio, tool registration)
+* Creating an MCP server using the mcp Python SDK and FastMCP
+* Defining tools with `@mcp.tool()`, typed parameters, and docstrings
+* Registering a server with `claude mcp add`
+* Testing and debugging servers locally and through Claude Code
+* Streamable HTTP: the recommended transport for remote MCP servers
+* MCP elicitation: servers can request user input mid-task
+* OAuth 2.1: available for authenticated remote servers
+
+== Key Concepts
+
+An MCP (Model Context Protocol) server is a process that speaks JSON-RPC over stdin/stdout. Claude Code launches it as a subprocess and calls its tools the same way it calls Git MCP or Jira MCP tools. You define the tools -- Claude calls them.
+
+The MCP server architecture works like this:
+
+----
+Claude Code                    Your MCP server
+----------                    ---------------
+Launches server via stdio  -> Server starts, registers tools
+Sends tool call request    -> Server runs your function
+Receives structured result <- Server returns the result
+----
+
+The mcp Python SDK handles all the protocol plumbing. You define tools as decorated Python functions, and the SDK handles serialization, validation, and the JSON-RPC transport.
+
+=== Tools and Resources
+
+A server registers tools -- functions that Claude can call with typed arguments and that return typed results. Optionally, a server can also expose resources (read-only data Claude can access).
+
+Each tool is a regular Python function with type annotations. The SDK uses the function name, docstring, and type hints to generate the tool schema that Claude sees.
+
+=== Streamable HTTP Transport
+
+For remote MCP servers, streamable HTTP is the recommended transport (added in MCP spec 2025-11-25). It replaced the older SSE (Server-Sent Events) transport. Key advantages:
+
+* Works behind load balancers and proxies
+* Single endpoint (not two like SSE)
+* Stateless-capable -- scales horizontally
+* Works across organizational boundaries
+
+=== MCP Elicitation
+
+MCP elicitation lets a server request input from the user mid-task. When a server needs information it can't get on its own, Claude Code displays an interactive dialog and passes the response back.
+
+Two modes:
+
+* **Form mode** -- the server defines form fields (e.g., username/password, configuration options)
+* **URL mode** -- the server provides a URL to open in the browser (e.g., OAuth login)
+
+== Steps Overview
+
+. Understand MCP server architecture
+. Create the project structure (requirements.txt, mcp SDK)
+. Write a simple MCP server with two tools (greet, summarize_file)
+. Test the server locally
+. Register with Claude Code using `claude mcp add`
+. Use the tools from Claude Code
+. Learn streamable HTTP for remote servers
+. Understand MCP elicitation patterns
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 04 recommended (Git MCP -- as a reference implementation)
+* Python 3.10+ installed
+* pip for package management
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-11-building-mcp-servers
+----
+
+The interactive module includes:
+
+* Preflight checks that detect existing setup
+* Skip-ahead logic for steps already completed
+* Verification commands after each step
+* A hands-on challenge: add a `search_files` tool using Python's glob module
+* Challenge verification with automated checks
