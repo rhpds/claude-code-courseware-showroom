@@ -7,13 +7,12 @@ Estimated time: 10 minutes | Prerequisites: Module 01
 
 Customize your Claude Code terminal experience with voice dictation, vim keybindings, custom themes, and keyboard shortcuts.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-28-voice-vim-terminal-customization
 ----
@@ -219,7 +218,7 @@ The status line is always visible and updates automatically. No configuration ne
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-28-voice-vim-terminal-customization
 ----

@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01, GitHub repo access
 
 Use Claude Code in CI/CD pipelines — GitHub Actions, Cloud Routines, and OpenShift Pipelines — for automated code review, testing, and deployment assistance.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-17-ci-cd-integration
 ----
@@ -221,7 +220,7 @@ Starting June 15, 2026, headless Claude Code usage (`claude -p`) and GitHub Acti
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-17-ci-cd-integration
 ----

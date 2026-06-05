@@ -7,13 +7,12 @@ Estimated time: 5 minutes | Prerequisites: Module 01 (Claude Code installed and 
 
 Connect Claude Code to Jira via the Atlassian Rovo MCP server. When complete, you can search issues, create tickets, add comments, and transition workflows — all from inside Claude Code. No containers or local server required.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-05-atlassian-mcp
 ----
@@ -66,7 +65,7 @@ The configuration lives in `~/.claude/settings.json` at the user level, making J
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-05-atlassian-mcp
 ----

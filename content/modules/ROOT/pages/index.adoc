@@ -6,13 +6,17 @@
 
 Claude Code Courseware is a set of *{module_count} interactive learning modules* for the RHDP operations team. Each module teaches a specific tool or integration through a guided, hands-on walkthrough that runs inside Claude Code.
 
-This showroom provides a reference guide for every module alongside a terminal where you can run the interactive walkthroughs.
+[WARNING]
+====
+*These modules run locally on your workstation, not in a browser.* Claude Code is a CLI tool that must be installed on your Mac or Linux machine. This showroom is a reference guide only -- to run the interactive walkthroughs, follow the xref:getting-started.adoc[Getting Started] instructions to install Claude Code and the courseware plugin on your local machine.
+====
 
 == How It Works
 
-. *Install the plugin* in the terminal tab (see xref:getting-started.adoc[Getting Started])
+. *Install Claude Code and the courseware plugin* on your local machine (see xref:getting-started.adoc[Getting Started])
 . *Browse modules* in the navigation sidebar to understand what each one covers
-. *Run a module* by typing its command in the terminal (e.g., `/learn-01-vertex-setup`)
+. *Open your local terminal* and launch Claude Code
+. *Run a module* by typing its command (e.g., `/learn-01-vertex-setup`)
 . *Follow the walkthrough* -- Claude Code guides you through each step with verification
 
 == Module Categories

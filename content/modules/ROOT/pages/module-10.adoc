@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01
 
 Create pre- and post-command hooks that run automatically when Claude Code executes tools, giving you guardrails and automation. Hooks are shell commands that Claude Code runs automatically before or after tool calls. They let you add guardrails, logging, and automation without modifying Claude's behavior directly.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-10-hooks
 ----
@@ -97,7 +96,7 @@ For PostToolUse hooks:
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-10-hooks
 ----

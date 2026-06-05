@@ -2,31 +2,36 @@
 :navtitle: Getting Started
 :description: Install the courseware plugin and start your first module.
 
+[WARNING]
+====
+*All steps below run on your local workstation, not in a browser.* Open a terminal on your Mac or Linux machine and run these commands there.
+====
+
 == Prerequisites
 
 * A Mac or Linux workstation
 * A Red Hat Google Cloud account with an assigned GCP project
-* A terminal (the Terminal tab in this showroom works)
+* A local terminal (Terminal.app, iTerm2, GNOME Terminal, etc.)
 
 == Step 1: Install Claude Code
 
-If you do not already have Claude Code installed, run the native installer:
+Open your local terminal and run the native installer:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 curl -fsSL https://claude.ai/install.sh | sh
 ----
 
 Verify:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 claude --version
 ----
 
 == Step 2: Install the Courseware Plugin
 
-[source,sh,role=execute]
+[source,sh]
 ----
 claude plugin add github:rhpds/claude-code-courseware
 ----
@@ -35,7 +40,7 @@ This makes all `/learn-*` commands available from any project directory.
 
 == Step 3: Launch Claude Code
 
-[source,sh,role=execute]
+[source,sh]
 ----
 claude
 ----
@@ -66,7 +71,7 @@ Claude Code will guide you through each step, verify your progress, and present 
 
 If you prefer to work from a local clone instead of the plugin:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 git clone https://github.com/rhpds/claude-code-courseware.git
 cd claude-code-courseware

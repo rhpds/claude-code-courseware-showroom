@@ -7,13 +7,12 @@ Estimated time: 30 minutes | Prerequisites: Module 01, Module 04 recommended
 
 Build a custom MCP server in Python that exposes tools Claude Code can call, then register and use it from inside a Claude Code session. Learn the MCP protocol, FastMCP SDK, tool registration, streamable HTTP transport, and MCP elicitation.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-11-building-mcp-servers
 ----
@@ -92,7 +91,7 @@ Two modes:
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-11-building-mcp-servers
 ----

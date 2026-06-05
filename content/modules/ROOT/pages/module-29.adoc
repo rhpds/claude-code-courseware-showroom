@@ -7,13 +7,12 @@ Estimated time: 10 minutes | Prerequisites: Module 01, Module 15 recommended
 
 Learn to control how hard Claude thinks per task using effort levels — a direct cost, latency, and quality lever that is separate from which model you run.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-29-effort-reasoning-control
 ----
@@ -185,7 +184,7 @@ Most people should leave adaptive reasoning on and just use effort levels.
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-29-effort-reasoning-control
 ----

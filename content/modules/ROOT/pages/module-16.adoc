@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01, at least two git reposito
 
 Configure Claude Code to work across multiple repositories in a single workspace, with shared and project-specific instructions.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-16-multi-repo-workspaces
 ----
@@ -141,7 +140,7 @@ For multi-repo workspaces, put shared servers in global settings and project-spe
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-16-multi-repo-workspaces
 ----

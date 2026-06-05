@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01
 
 Learn to manage session costs, context window usage, and model routing to get the most value from Claude Code.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-15-cost-context-management
 ----
@@ -150,7 +149,7 @@ Prompt caching also reduces costs. When you send the same context repeatedly (li
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-15-cost-context-management
 ----

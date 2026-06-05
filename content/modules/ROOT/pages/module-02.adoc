@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01 (Claude Code installed and
 
 Learn how to write a CLAUDE.md file that shapes Claude Code's behavior in any project. When complete, you'll know how to give Claude persistent project instructions covering conventions, tool preferences, cost-saving patterns, and workflow rules.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-02-writing-claude-md
 ----
@@ -102,7 +101,7 @@ The interactive walkthrough covers:
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-02-writing-claude-md
 ----

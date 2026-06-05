@@ -1,12 +1,7 @@
 type: showroom
-default_width: 45
+default_width: 100
 persist_url_state: true
 
 view_switcher:
-  enabled: true
-  default_mode: split
-
-tabs:
-  - name: Terminal
-    path: /terminal/
-    port: 443
+  enabled: false
+  default_mode: stacked

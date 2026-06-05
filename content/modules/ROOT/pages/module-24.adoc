@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01
 
 Learn to integrate security into your daily Claude Code workflow using the security-guidance plugin, /security-review, and secure coding patterns. This module teaches you to leverage Claude Code's security capabilities as part of your daily workflow rather than treating security as an afterthought.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-24-security-first-development
 ----
@@ -117,7 +116,7 @@ Think of it as defense in depth:
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-24-security-first-development
 ----

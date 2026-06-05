@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01, Module 09 recommended
 
 Use Claude Code's built-in agent system to run specialized code reviews, and create custom review agent definitions. When complete, you'll know how to spawn review agents, write your own agent definitions, and coordinate multiple agents for comprehensive reviews.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-12-review-agents
 ----
@@ -104,7 +103,7 @@ One agent identifies risk areas, second agent deep-dives into those specific are
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-12-review-agents
 ----

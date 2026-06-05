@@ -7,13 +7,12 @@ Estimated time: 10 minutes | Prerequisites: Module 01
 
 Master session checkpoints, rewind, resume, and auto mode to work faster and recover from mistakes effortlessly.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-27-checkpointing-session-management
 ----
@@ -196,7 +195,7 @@ Prefer `settings.local.json` for project-specific permissions. This keeps your g
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-27-checkpointing-session-management
 ----

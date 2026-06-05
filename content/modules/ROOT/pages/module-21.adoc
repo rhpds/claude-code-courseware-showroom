@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01, Module 09 recommended
 
 Discover, install, and manage Claude Code plugins from marketplace registries. When complete, you'll have marketplaces configured, understand how to evaluate plugins, and know how to install, inspect, and remove them.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-21-plugin-marketplace
 ----
@@ -108,7 +107,7 @@ claude plugin list
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-21-plugin-marketplace
 ----

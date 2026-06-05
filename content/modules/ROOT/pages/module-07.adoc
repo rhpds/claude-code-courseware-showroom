@@ -7,13 +7,12 @@ Estimated time: 15 minutes | Prerequisites: Module 01 (Claude Code installed and
 
 Connect Claude Code to Notion so you can search, read, create, and update pages and databases directly from the CLI.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-07-notion-mcp
 ----
@@ -73,7 +72,7 @@ The search uses semantic matching — it finds pages by content, not just exact 
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-07-notion-mcp
 ----

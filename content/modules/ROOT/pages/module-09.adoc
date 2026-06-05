@@ -7,13 +7,12 @@ Estimated time: 20 minutes | Prerequisites: Module 01
 
 Create Claude Code skills -- reusable, shareable instructions that run as slash commands or get triggered automatically. A skill is a markdown file (SKILL.md) that teaches Claude Code how to perform a specific task. Skills can run as slash commands, get triggered by keywords in conversation, run as subagents to save context and cost, and route to cheaper models for mechanical tasks.
 
-[IMPORTANT]
+[WARNING]
 ====
-This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+*This module runs locally on your workstation, not in a browser.* Install Claude Code and the courseware plugin (see xref:getting-started.adoc[Getting Started]), then run this in your local terminal:
 
-To run this module interactively, open the Terminal tab and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-09-writing-custom-skills
 ----
@@ -101,7 +100,7 @@ If skills aren't activating or behaving oddly, run `/doctor` to check for skill 
 
 Open your terminal and run:
 
-[source,sh,role=execute]
+[source,sh]
 ----
 /learn-09-writing-custom-skills
 ----
