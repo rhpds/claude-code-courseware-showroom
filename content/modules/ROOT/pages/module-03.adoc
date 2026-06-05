@@ -1,0 +1,70 @@
+= Module 03: Memory MCP
+:navtitle: 03. Memory MCP
+:description: Teach Claude Code to remember across sessions using the Memory MCP knowledge graph.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Teach Claude Code to remember across sessions using the Memory MCP knowledge graph. When complete, you can persist project context, team findings, and cross-session notes that survive restarts.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-03-memory-mcp
+----
+====
+
+== What You Will Learn
+
+* How to install and configure the Memory MCP server
+* What a knowledge graph is and why it matters for Claude Code
+* How to create entities, observations, and relations
+* How to search and read the knowledge graph across sessions
+* When to use Memory MCP vs other persistence approaches
+
+== Key Concepts
+
+Memory MCP gives Claude Code long-term memory that survives between sessions. It stores a knowledge graph of entities (things), observations (facts about things), and relations (connections between things) in a local JSON file.
+
+The knowledge graph has three building blocks:
+
+* **Entity** — a thing with a name and type (e.g., "ops-hub" of type "project")
+* **Observation** — a fact about an entity (e.g., "uses React + PatternFly 6")
+* **Relation** — a link between entities (e.g., ops-hub "depends on" jira-mcp)
+
+When you start a new Claude Code session, context from previous sessions is gone. Memory MCP lets you persist project findings, architectural decisions, and team knowledge so Claude can pick up where it left off.
+
+The Memory MCP server runs locally and uses the `@modelcontextprotocol/server-memory` package from npm. Your knowledge graph lives at `~/.claude/memory.json`.
+
+== Steps Overview
+
+. Install the `@modelcontextprotocol/server-memory` package globally via npm
+. Smoke test the server process to ensure it can launch
+. Write the MCP server config to `~/.claude/settings.json` with full paths to avoid PATH issues
+. Restart Claude Code to pick up the new server
+. Read the current knowledge graph using `mcp__memory__read_graph`
+. Create an entity for the courseware project with observations
+. Add new observations to existing entities
+. Create relations between entities to map how things connect
+. Search the graph using semantic queries
+. Complete a challenge by creating an entity for yourself
+
+== Prerequisites
+
+* Module 01: Claude Code installed and working
+* Node.js and npm (usually bundled with Node.js)
+* Terminal access to your shell PATH configuration
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-03-memory-mcp
+----

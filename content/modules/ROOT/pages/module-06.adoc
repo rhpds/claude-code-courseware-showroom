@@ -1,0 +1,81 @@
+= Module 06: Playwright MCP
+:navtitle: 06. Playwright MCP
+:description: Use browser automation from inside Claude Code via the Playwright MCP server.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Use browser automation from inside Claude Code via the Playwright MCP server. When complete, Claude can navigate to pages, take screenshots, click elements, fill forms, and inspect page content — all through structured MCP tools.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-06-playwright-mcp
+----
+====
+
+== What You Will Learn
+
+* How to install and configure the Playwright MCP server with Chrome
+* How to navigate to web pages and capture structured snapshots
+* How to interact with page elements (click, type, hover, fill forms)
+* How to take screenshots for documentation and visual testing
+* When to use snapshots vs screenshots
+* How to close browsers and clean up resources
+
+== Key Concepts
+
+The Playwright MCP server gives Claude Code direct browser control. Instead of asking you to open a URL and describe what you see, Claude can navigate, read page content, click buttons, fill forms, and take screenshots on its own.
+
+A "snapshot" returns the page's accessibility tree — a structured view of all the elements Claude can see and interact with. This is more useful than a screenshot because Claude can reason about the elements directly. Think of it as "what a screen reader sees" — structured, actionable, and much richer than raw HTML.
+
+Available interaction tools:
+
+* `browser_navigate` — go to any URL
+* `browser_snapshot` — capture page structure as accessibility tree
+* `browser_click` — click any element
+* `browser_type` — type text into inputs
+* `browser_hover` — hover over elements (triggers menus, tooltips)
+* `browser_select_option` — choose from dropdowns
+* `browser_fill_form` — fill multiple form fields at once
+* `browser_press_key` — press keyboard keys (Enter, Tab, Escape, etc.)
+* `browser_take_screenshot` — capture visual state as PNG or JPEG
+* `browser_close` — clean up browser resources
+
+The pattern is always: snapshot → find element → act → snapshot again.
+
+The server runs locally and controls a local Chrome instance. Chrome must be installed at the standard system path (`/Applications/Google Chrome.app` on macOS). The `@playwright/mcp` package comes from npm.
+
+== Steps Overview
+
+. Install the `@playwright/mcp` package globally via npm
+. Smoke test the server with Chrome to ensure it launches
+. Write the MCP server config to `~/.claude/settings.json` with full paths
+. Restart Claude Code to activate the Playwright MCP server
+. Use `browser_navigate` to open a web page
+. Use `browser_snapshot` to capture the page's accessibility tree
+. Find elements in the snapshot and use `browser_click` to interact
+. Use `browser_type` to fill text fields
+. Use `browser_take_screenshot` to capture visual state
+. Use `browser_close` to clean up resources
+
+== Prerequisites
+
+* Module 01: Claude Code installed and working
+* Node.js and npm
+* Google Chrome installed at the standard system path
+* macOS users: Screen Recording and Accessibility permissions granted to Terminal
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-06-playwright-mcp
+----

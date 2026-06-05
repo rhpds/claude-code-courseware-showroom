@@ -1,0 +1,72 @@
+= Module 05: Atlassian MCP Server (Jira)
+:navtitle: 05. Atlassian MCP
+:description: Connect Claude Code to Jira via the Atlassian Rovo MCP server.
+
+[.module-meta]
+Estimated time: 5 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Connect Claude Code to Jira via the Atlassian Rovo MCP server. When complete, you can search issues, create tickets, add comments, and transition workflows — all from inside Claude Code. No containers or local server required.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-05-atlassian-mcp
+----
+====
+
+== What You Will Learn
+
+* How to configure the Atlassian Rovo MCP server (cloud-hosted, no local install)
+* How to authenticate with your Red Hat Atlassian account via OAuth
+* How to search Jira issues using JQL (Jira Query Language)
+* How to create and update Jira issues
+* How to add comments and transition issue workflows
+* When to use API tokens for long-lived sessions vs OAuth
+
+== Key Concepts
+
+The Atlassian Rovo MCP server is cloud-hosted by Atlassian — no Podman, Docker, or local server needed. You configure Claude Code to point at `https://mcp.atlassian.com/v1/mcp` and authenticate via browser-based OAuth.
+
+All MCP operations use your Red Hat Atlassian credentials and require an active account on `redhat.atlassian.net`. OAuth tokens expire after a few hours. For long-running sessions or automation, you can set up an API token instead.
+
+The MCP server provides tools for:
+
+* Searching issues with JQL queries
+* Creating and updating issues (summary, description, assignee, custom fields)
+* Adding comments with visibility control (public or restricted)
+* Transitioning issue workflows (e.g., To Do → In Progress → Done)
+* Looking up users and projects
+* Reading issue metadata and field schemas
+
+The configuration lives in `~/.claude/settings.json` at the user level, making Jira access available across all projects.
+
+== Steps Overview
+
+. Add `mcp-atlassian-prod` entry to `~/.claude/settings.json` pointing to the cloud URL
+. Restart Claude Code to pick up the new MCP server
+. Run `/mcp`, select `mcp-atlassian-prod`, and click Authenticate
+. Sign in with your Red Hat credentials in the browser and grant access
+. Return to Claude Code — the Atlassian MCP tools are now available
+. Use `atlassianUserInfo` to verify the connection works
+. (Optional) Set up an API token for long-lived sessions
+. Search for Jira issues in the RHDPOPS project using JQL
+
+== Prerequisites
+
+* Module 01: Claude Code installed and working
+* A Red Hat Atlassian account with access to `redhat.atlassian.net`
+* Browser for OAuth authentication
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-05-atlassian-mcp
+----

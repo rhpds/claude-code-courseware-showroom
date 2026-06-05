@@ -1,0 +1,79 @@
+= Module 07: Notion MCP
+:navtitle: 07. Notion MCP
+:description: Connect Claude Code to Notion so you can search, read, create, and update pages and databases.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Connect Claude Code to Notion so you can search, read, create, and update pages and databases directly from the CLI.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-07-notion-mcp
+----
+====
+
+== What You Will Learn
+
+* How to enable the built-in Notion integration (no npm packages needed)
+* How to authenticate with your Notion workspace via OAuth
+* How to search your workspace with semantic queries
+* How to read page content in Notion-flavored Markdown
+* How to create and update pages
+* How to work with databases, filters, and sorts
+
+== Key Concepts
+
+Claude Code includes a built-in Notion integration that uses OAuth — no npm packages or local servers needed. The integration appears as `claude.ai Notion` in your MCP server list and is cloud-hosted by Anthropic as a first-party integration.
+
+All operations go through Notion's cloud API. You need an active Notion workspace and permission to grant third-party access. The OAuth token is refreshed automatically as needed.
+
+Available operations:
+
+* Search pages and databases with semantic queries (not just exact title matches)
+* Read page content in Markdown format (works for both regular pages and database entries)
+* Create new pages (standalone or under a parent)
+* Update existing page content and properties
+* Query databases with filters and sorts
+* Add comments to pages and discussions
+* Fetch database schemas and data sources
+
+Common workflows:
+
+* "Search Notion for our deployment runbook"
+* "Create a meeting notes page for today"
+* "Update the project status in Notion"
+* "What's in the Q2 planning database?"
+
+The search uses semantic matching — it finds pages by content, not just exact title matches. You can search across all pages, databases, and connected sources.
+
+== Steps Overview
+
+. Trigger Notion OAuth by calling any Notion MCP tool
+. Sign in to Notion in the browser and grant access to your workspace
+. Use `notion-search` to find pages with semantic queries
+. Use `notion-fetch` to read page content in Markdown
+. Use `notion-create-pages` to create a test page
+. Use `notion-update-page` to modify existing content
+. Complete a challenge by searching for a project page and creating a summary
+
+== Prerequisites
+
+* Module 01: Claude Code installed and working
+* A Notion workspace you have access to
+* Browser for OAuth authentication
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-07-notion-mcp
+----

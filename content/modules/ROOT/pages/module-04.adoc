@@ -1,0 +1,71 @@
+= Module 04: Git MCP
+:navtitle: 04. Git MCP
+:description: Use Git operations from inside Claude Code via the Git MCP server.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Use Git operations from inside Claude Code via the Git MCP server. When complete, Claude can check status, read history, diff branches, and manage branches — all through structured MCP tools instead of parsing shell output.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-04-git-mcp
+----
+====
+
+== What You Will Learn
+
+* How to install and configure the Git MCP server
+* When to use Git MCP tools vs shell commands
+* How to check repository status and diffs with structured data
+* How to read commit history and inspect individual commits
+* How to compare branches and commits
+* How to create and manage branches via MCP tools
+
+== Key Concepts
+
+The Git MCP server gives Claude Code structured access to Git repositories. Instead of parsing shell output from `git log` or `git diff`, Claude gets clean, typed data it can reason about directly.
+
+Three diff tools cover different needs:
+
+* `git_diff_unstaged` — changes not yet staged (working directory vs index)
+* `git_diff_staged` — changes staged for commit (index vs HEAD)
+* `git_diff` — compare any two branches, tags, or commits
+
+The Git MCP is the recommended approach in most CLAUDE.md configurations for read operations like status, log, diff, and branch listing. Use shell commands for interactive operations like `git rebase -i`, merge conflicts, `git push`, and `git pull`.
+
+The server runs entirely locally and wraps Git CLI operations. No network calls beyond the initial npm install of `@modelcontextprotocol/server-git`.
+
+== Steps Overview
+
+. Install the `@modelcontextprotocol/server-git` package globally via npm
+. Smoke test the server to verify it launches successfully
+. Write the MCP server config to `~/.claude/settings.json` with full npx path
+. Restart Claude Code to activate the Git MCP server
+. Use `git_status` to check repository state with structured data
+. Use `git_log` to read commit history and follow message conventions
+. Use `git_show` to inspect individual commits with full diffs
+. Use `git_diff` to compare branches or commits
+. Use `git_branch` and `git_create_branch` to manage branches
+
+== Prerequisites
+
+* Module 01: Claude Code installed and working
+* Git installed and configured
+* Node.js and npm
+* A git repository to work in (run from inside a git repo)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-04-git-mcp
+----

@@ -1,0 +1,81 @@
+= Module 08: Container and Podman MCP
+:navtitle: 08. Container & Podman
+:description: Connect Claude Code to your container runtime to build, run, inspect, and debug containers.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01 (Claude Code installed and working)
+
+Connect Claude Code to your container runtime so you can build, run, inspect, and debug containers from the CLI.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-08-container-podman-mcp
+----
+====
+
+== What You Will Learn
+
+* How to detect which container runtime you have (Podman or Docker)
+* How to configure a container MCP server if available
+* How to use shell fallback when no MCP server exists
+* How to pull and run containers from Claude Code
+* How to inspect container metadata and view logs
+* How to debug container issues with natural language queries
+* How to clean up test containers
+
+== Key Concepts
+
+This module has a built-in fallback to shell commands because the container MCP ecosystem is immature and changing rapidly. Claude Code can run `podman` or `docker` commands directly through the Bash tool when no MCP server is available.
+
+Core container operations work the same way regardless of whether you use MCP tools or shell commands:
+
+* Pull images from container registries
+* Run containers with port mappings and names
+* Inspect container metadata (image, status, configuration)
+* View container logs for debugging
+* Check resource usage (CPU, memory, network)
+* Stop and remove containers for cleanup
+
+Natural language workflows you can use:
+
+* "What containers are running?"
+* "Show me the logs for my app container"
+* "Why is the container restarting?"
+* "Build and run the Dockerfile in this directory"
+* "Check if any containers are using too much memory"
+* "Show me the environment variables in the running container"
+
+The module auto-detects which container runtime is available (Podman or Docker) and uses that for all operations. If no runtime is found, you can choose between installing one (full experience) or continuing with a conceptual overview.
+
+== Steps Overview
+
+. Check if Podman or Docker is installed and running
+. Attempt to find and configure a container MCP server package
+. If no MCP server exists, confirm shell fallback is available
+. Pull a lightweight test image (httpd:alpine)
+. Run the container with port mapping and verify it responds
+. Inspect container metadata and view logs
+. Check resource usage with stats
+. Stop and remove the test container
+. Complete a challenge by running nginx and checking logs
+
+== Prerequisites
+
+* Module 01: Claude Code installed and working
+* Podman or Docker installed and running
+* Node.js and npm (if a container MCP package is available)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-08-container-podman-mcp
+----
