@@ -1,0 +1,157 @@
+= Module 25: Security Scanning & Vulnerability Research
+:navtitle: 25. Security Scanning & Vulnerability Research
+:description: AI-powered security scanning from Anthropic Mythos to practical triage.
+
+[.module-meta]
+Estimated time: 20 minutes | Prerequisites: Module 01, Module 24 recommended
+
+Understand how AI-powered security scanning works, from Anthropic Mythos to practical vulnerability triage and remediation workflows. This module covers the frontier security model, multi-stage verification, scoping scans, triaging findings, and integrating security scanning into team workflows.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-25-security-scanning-vulnerability-research
+----
+====
+
+== What You Will Learn
+
+* Anthropic Mythos and Project Glasswing -- the frontier security model
+* Claude Security scanning -- multi-stage verification
+* Scoping scans -- targeting directories and components
+* Triaging findings -- severity, false positives, prioritization
+* Integration with team workflows -- Jira, Slack, export
+* SAST vs LLM audit -- strengths, limits, responsible disclosure
+
+== Key Concepts
+
+=== Anthropic Mythos and Project Glasswing
+
+Anthropic built a frontier model called Mythos specifically for security research. Unlike general-purpose Claude, Mythos was trained to find vulnerabilities, understand exploit chains, and verify that findings are real -- not just pattern-matched noise.
+
+The numbers tell the story:
+
+* 23,000+ issues found across 1,000+ open source projects
+* 6,202 high-severity or critical-severity findings
+* 90%+ validated as true positives (not false alarms)
+
+Notable discoveries:
+
+* A 27-year-old vulnerability in OpenBSD
+* A certificate forgery exploit in wolfSSL
+* Issues in codebases that had been audited by humans multiple times
+
+Project Glasswing is Anthropic's initiative to apply Mythos at scale across critical open source infrastructure. Partners include AWS, Apple, Cisco, Google, Microsoft, Linux Foundation, and other major organizations. Together they've committed $100M+ in model usage credits to scan the open source software that powers most of the internet.
+
+=== Claude Security Scanning: Multi-Stage Verification
+
+Claude Security scanning uses a multi-stage verification approach:
+
+* *Stage 1: Initial scan* -- The model reads the code and identifies potential issues. At this stage, findings include both real problems and false positives.
+
+* *Stage 2: Self-challenge* -- The model challenges its own conclusions. For each finding, it asks: "Is this actually exploitable? Under what conditions? Could this be a false positive?" This dramatically reduces noise compared to traditional scanners.
+
+* *Stage 3: Verification* -- For remaining findings, the model attempts to construct a proof of concept or exploitation path. If it can't demonstrate the issue is real, it downgrades or drops the finding.
+
+Each finding that survives all three stages includes:
+
+* Confidence score (how certain the model is)
+* Severity level (Critical / High / Medium / Low)
+* Impact description (what could go wrong)
+* Reproduction steps (how to trigger the issue)
+* Suggested patch (how to fix it)
+
+=== Scoping Scans
+
+Full-project scans are useful but not always what you need. You can scope security reviews to specific areas:
+
+* *By directory* -- Review only the API layer, only the auth module, or only recently changed files
+* *By concern* -- Ask for a review focused on a specific vulnerability class (SQL injection, session management, hardcoded secrets)
+* *By change set* -- Review only the files changed in a recent commit or PR (most common workflow in daily development)
+
+=== Triaging Findings
+
+Not every finding requires immediate action. Triage is the process of assessing each finding and deciding what to do with it.
+
+Severity levels:
+
+* *CRITICAL* -- Actively exploitable, high impact, fix immediately. Examples: remote code execution, authentication bypass, SQL injection in a public endpoint
+* *HIGH* -- Exploitable with some prerequisites, significant impact. Examples: stored XSS, privilege escalation, insecure deserialization
+* *MEDIUM* -- Requires specific conditions to exploit, moderate impact. Examples: CSRF without sensitive actions, information disclosure, missing rate limiting
+* *LOW* -- Theoretical risk, minimal impact, or defense-in-depth. Examples: verbose error messages, missing security headers, outdated but unexploitable deps
+
+Triage decisions:
+
+* *FIX NOW* -- Critical and High severity, confirmed real
+* *SCHEDULE* -- Medium severity, add to sprint backlog
+* *ACCEPT RISK* -- Low severity, document and move on
+* *FALSE POSITIVE* -- Mark as not applicable, document why
+
+=== SAST vs LLM Audit
+
+Traditional SAST (Static Application Security Testing) and LLM-based security audits serve different purposes. Neither replaces the other.
+
+SAST tools (Semgrep, Snyk, CodeQL, Bandit):
+
+* Strengths: Deterministic, fast, low false-positive rate for known patterns, integrates into CI/CD, established CVE databases
+* Weaknesses: Only finds what it has rules for, misses novel vulnerabilities, struggles with complex data flow, cannot reason about business logic
+
+LLM audit (Claude Security, /security-review):
+
+* Strengths: Finds novel vulnerabilities, understands semantic meaning and business logic, reasons about multi-step exploit chains, generates reproduction steps and fix suggestions
+* Weaknesses: Non-deterministic, slower than rule-based scanners, higher compute cost, may hallucinate findings (multi-stage verification mitigates this)
+
+Best practice: use both.
+
+* SAST in CI/CD for every commit (fast, deterministic baseline)
+* LLM audit for periodic deep reviews and pre-release checks
+* LLM audit for new codebases where SAST rules may not cover the technology stack
+
+=== Responsible Disclosure
+
+If you find a vulnerability in open source software:
+
+. Do NOT disclose publicly before notifying the maintainer
+. Check the project's SECURITY.md or security policy
+. Report through the project's preferred channel
+. Allow reasonable time for a fix (typically 90 days)
+. If a CVE is warranted, the maintainer or a CNA files it
+
+For internal projects:
+
+. Create a Jira ticket with restricted visibility
+. Notify the team lead and security contact
+. Fix in a private branch, merge after verification
+. Document the finding and fix for future reference
+
+== Steps Overview
+
+. Understand Anthropic Mythos and Project Glasswing
+. Learn Claude Security's multi-stage verification
+. Run /security-review on a project directory
+. Scope scans to specific directories or concerns
+. Triage findings by severity
+. Integrate findings into team workflows (Jira, export)
+. Understand SAST vs LLM audit strengths and limits
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 24 recommended (Security-First Development)
+* Module 05 recommended for the challenge (Atlassian MCP for Jira integration)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-25-security-scanning-vulnerability-research
+----
+
+The interactive module will guide you through running security scans, triaging findings, and creating Jira tickets for vulnerabilities. You'll complete a challenge to scan a project, triage the findings, and create a Jira ticket for the highest-severity finding.

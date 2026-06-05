@@ -1,0 +1,125 @@
+= Module 24: Security-First Development
+:navtitle: 24. Security-First Development
+:description: Integrate security into your daily Claude Code workflow.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Learn to integrate security into your daily Claude Code workflow using the security-guidance plugin, /security-review, and secure coding patterns. This module teaches you to leverage Claude Code's security capabilities as part of your daily workflow rather than treating security as an afterthought.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-24-security-first-development
+----
+====
+
+== What You Will Learn
+
+* The security-guidance plugin and its three scanning levels
+* Installing the security-guidance plugin
+* Running /security-review for on-demand analysis
+* Writing CLAUDE.md security instructions for OWASP Top 10
+* Creating a security hook for pre-commit validation
+* Claude's built-in security awareness vs. active plugin scanning
+
+== Key Concepts
+
+=== Security-Guidance Plugin: Three Scanning Levels
+
+The security-guidance plugin adds active security scanning to Claude Code at three levels:
+
+* *Level 1 -- File Edits*: Scans every file Claude edits or creates in real time. Catches issues like hardcoded credentials, insecure file permissions, and dangerous function calls as they happen.
+
+* *Level 2 -- Diffs*: Analyzes staged changes (git diff) for security patterns. Catches injection vulnerabilities, authentication flaws, and data exposure before code leaves your machine.
+
+* *Level 3 -- Commits*: Reviews full commit context including cross-file impact. Catches architectural security issues like missing input validation across request handlers, or authentication bypasses introduced by multiple file changes together.
+
+Each level builds on the previous one:
+
+* Level 1 catches line-level issues
+* Level 2 catches change-level issues
+* Level 3 catches system-level issues
+
+=== /security-review Command
+
+The /security-review command scans your current project for security issues. It checks:
+
+* Staged and unstaged changes (git diff)
+* New files that haven't been committed
+* Configuration files for insecure settings
+* Dependencies for known vulnerabilities (if lockfiles exist)
+
+The output groups findings by severity:
+
+* *CRITICAL* -- Must fix before merging (e.g., hardcoded secrets, SQL injection, authentication bypass)
+* *HIGH* -- Should fix before merging (e.g., XSS, insecure deserialization, missing input validation)
+* *MEDIUM* -- Fix when practical (e.g., verbose error messages, weak cryptographic choices)
+* *LOW* -- Informational (e.g., missing security headers, commented-out authentication code)
+
+=== CLAUDE.md Security Instructions
+
+Adding security instructions to your CLAUDE.md makes Claude Code security-aware by default. Every time Claude generates or modifies code in this project, it will check against these rules.
+
+The instructions are based on the OWASP Top 10, adapted for what Claude Code can realistically catch and prevent during code generation:
+
+* *Injection Prevention (OWASP A03)* -- Never use string concatenation for SQL queries, use parameterized queries
+* *Authentication and Session Management (OWASP A07)* -- Never hardcode passwords, API keys, or tokens
+* *Cross-Site Scripting Prevention (OWASP A03)* -- Escape all user-supplied data before rendering in HTML
+* *Sensitive Data Exposure (OWASP A02)* -- Never log sensitive data, never commit .env files
+* *Security Misconfiguration (OWASP A05)* -- Never run with debug mode enabled in production
+
+=== Security Hooks
+
+Pre-commit security hooks scan staged files for common security issues before commits. The hook fires on git commit commands and scans for:
+
+* Hardcoded secrets patterns
+* SQL injection patterns
+* Shell injection patterns
+
+Hooks can warn or block commits based on exit code (exit 0 = warn, exit 2 = block).
+
+=== Built-in Security vs. Plugin Scanning
+
+Two layers of security awareness:
+
+* *Layer 1: Claude's Built-in Security Awareness* -- Passive, applies during code generation. Claude is trained to recognize security patterns and avoid generating obvious vulnerabilities.
+
+* *Layer 2: Security-Guidance Plugin* -- Active, continuous scanning on top of Claude's baseline awareness. Scans every file edit, diff, and commit automatically. Catches issues in existing code, not just generated code.
+
+Think of it as defense in depth:
+
+* CLAUDE.md rules -- Shape what Claude writes
+* Built-in awareness -- Avoid obvious mistakes
+* Plugin scanning -- Catch what slips through
+* Hooks -- Gate what gets committed
+* /security-review -- On-demand deep analysis
+
+== Steps Overview
+
+. Understand the security-guidance plugin's three scanning levels
+. Install the security-guidance plugin
+. Run /security-review on current changes
+. Write CLAUDE.md security instructions
+. Create a security pre-commit hook
+. Understand built-in security vs. plugin scanning
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-24-security-first-development
+----
+
+The interactive module will guide you through installing the security-guidance plugin, running security reviews, writing CLAUDE.md security instructions, and creating pre-commit hooks. You'll complete a challenge to introduce and catch vulnerabilities using the full security pipeline.
