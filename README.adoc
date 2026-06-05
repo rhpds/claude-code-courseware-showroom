@@ -1,0 +1,54 @@
+= Claude Code Courseware Showroom
+:toc: macro
+
+Red Hat Showroom content for the Claude Code Courseware -- 29 interactive learning modules for the RHDP operations team.
+
+toc::[]
+
+== What Is This?
+
+This repository packages the https://github.com/rhpds/claude-code-courseware[Claude Code Courseware] as a Red Hat Showroom lab. It provides:
+
+* An Antora-built reference guide for all 29 modules
+* A terminal tab (Wetty) for running Claude Code interactively
+* Helm values for deploying to OpenShift via the showroom-single-pod chart
+
+The courseware modules are designed to run interactively inside Claude Code. This showroom provides the documentation alongside a terminal so learners can read about each module and then run it.
+
+== Local Development
+
+[source,bash]
+----
+npm install
+npm run build
+npm run serve
+----
+
+Open http://localhost:8887 in your browser.
+
+== Deploy to OpenShift
+
+Prerequisites: access to an OpenShift cluster with the showroom-deployer Helm charts.
+
+[source,bash]
+----
+helm template showroom charts/showroom-single-pod \
+  --set deployer.domain=apps.YOUR_CLUSTER.opentlc.com \
+  --set guid=courseware-lab \
+  --set content.repoUrl=https://github.com/rhpds/claude-code-courseware-showroom.git \
+  --set content.repoRef=main \
+  --set terminal.setup=true \
+  --set wetty.setup=true \
+  --set nookbag_sidecar.setup=false \
+  -f helm/values-courseware.yaml \
+  | oc apply -f -
+----
+
+== Content Source
+
+Module content is extracted from the courseware source at https://github.com/rhpds/claude-code-courseware. Each module page is a reference guide -- the full interactive experience requires installing the courseware plugin:
+
+[source,bash]
+----
+claude plugin add github:rhpds/claude-code-courseware
+----

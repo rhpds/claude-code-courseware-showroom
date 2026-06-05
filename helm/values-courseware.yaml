@@ -1,0 +1,19 @@
+content:
+  repoUrl: https://github.com/rhpds/claude-code-courseware-showroom.git
+  repoRef: main
+  antoraPlaybook: site.yml
+
+terminal:
+  setup: "true"
+
+wetty:
+  setup: "true"
+
+nookbag_sidecar:
+  setup: "false"
+
+runtime_automation:
+  setup: "false"
+
+novnc:
+  setup: "false"
