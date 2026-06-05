@@ -1,0 +1,225 @@
+= Module 28: Voice, Vim, and Terminal Customization
+:navtitle: 28. Voice & Vim
+:description: Customize Claude Code with voice dictation, vim keybindings, and themes.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01
+
+Customize your Claude Code terminal experience with voice dictation, vim keybindings, custom themes, and keyboard shortcuts.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-28-voice-vim-terminal-customization
+----
+====
+
+== What You Will Learn
+
+* Voice dictation (push-to-talk)
+* Vim mode for prompt editing
+* Keyboard shortcut customization
+* Custom themes
+* Fullscreen TUI mode
+* Output styles and the status line
+
+== Key Concepts
+
+=== Voice Dictation
+
+Voice dictation lets you speak your prompts instead of typing them. The `/voice` command enables push-to-talk in your Claude Code session.
+
+*How it works:*
+
+* Run `/voice` to enable voice mode
+* Hold the spacebar to record your voice
+* Release the spacebar to stop recording and transcribe
+* The transcribed text appears in your prompt input
+* You can also use tap mode: tap spacebar to start, tap again to stop
+
+*Auto-submit option:*
+
+When enabled, the transcribed text is submitted as a prompt immediately after transcription — no manual Enter needed.
+
+*Technical details:*
+
+* Transcription happens on Anthropic's servers (not local)
+* Audio is sent securely and not stored after transcription
+* Voice dictation does NOT consume tokens from your usage
+* Requires a microphone and a local terminal (not SSH/remote)
+
+*Platform support:*
+
+* macOS: supported
+* Linux: supported
+* Windows: supported
+* Remote/SSH sessions: NOT supported (no microphone access)
+
+=== Vim Mode
+
+Vim mode brings vim keybindings to the Claude Code prompt input area. The `/vim` command toggles it on and off within your session.
+
+*What vim mode covers:*
+
+* Mode switching: Normal mode and Insert mode
+* Navigation: h/j/k/l (character/line), w/b/e (word), 0/$ (line start/end)
+* Search within input: f/F (find char forward/backward), t/T (till char)
+* Editing operators: d (delete), c (change), y (yank/copy), p (paste)
+* Text objects: iw (inner word), aw (a word), i" (inner quotes), a( (a paren group)
+
+*Important distinction:*
+
+Vim mode controls TEXT INPUT in the prompt area. Keybindings (next section) control APPLICATION ACTIONS like submit, cancel, scroll. They operate on different layers and do not conflict.
+
+*Behavior notes:*
+
+* Escape enters Normal mode (it does NOT cancel the chat)
+* `/vim` toggles vim mode off again if you want to return to normal editing
+* Vim mode persists within the current session
+* It resets when you start a new session (not persisted across sessions)
+
+=== Keybinding Customization
+
+Every keyboard shortcut in Claude Code can be customized via `~/.claude/keybindings.json`.
+
+This file defines shortcuts organized by context. Claude Code has 17 application contexts (prompt input, chat view, dialog, etc.), and each context has its own set of bindable actions.
+
+*Features:*
+
+* Modifier combinations: Ctrl, Alt/Option, Shift, Meta/Cmd
+* Chord sequences: press one key combo, then another (e.g., Ctrl+X followed by Ctrl+K)
+* Unbinding: set a shortcut to null to disable it
+* Changes apply instantly — no restart needed
+
+*Example keybindings.json:*
+
+[source,json]
+----
+[
+  {
+    "key": "ctrl+k",
+    "command": "chat:submit",
+    "when": "inputFocused"
+  }
+]
+----
+
+Each entry needs: `key`, `command`, and `when` (context).
+
+To see all available commands and contexts, run `/keybindings-help`.
+
+*Common keybinding customizations:*
+
+* Change the submit key (default: Enter or Ctrl+Enter depending on mode)
+* Add chord shortcuts for frequent actions
+* Unbind keys that conflict with your terminal emulator
+* Add shortcuts for toggling features
+
+=== Custom Themes
+
+Claude Code supports custom color themes that change the appearance of the terminal UI. Themes are stored as JSON files in `~/.claude/themes/`.
+
+The `/theme` command lets you switch between available themes. You can also create your own theme files by hand.
+
+*Example theme:*
+
+[source,json]
+----
+{
+  "name": "My Custom Theme",
+  "colors": {
+    "primary": "#4A9FD9",
+    "secondary": "#6B7280",
+    "accent": "#10B981",
+    "background": "default",
+    "text": "default"
+  }
+}
+----
+
+=== Fullscreen TUI Mode
+
+Claude Code can run in a fullscreen terminal UI (TUI) mode that uses the alternate screen buffer for flicker-free rendering.
+
+*Fullscreen TUI features:*
+
+* Flicker-free rendering via alternate screen buffer
+* Mouse support: click to position cursor, drag to select and copy
+* Ctrl+O opens transcript mode with search functionality
+* Flat memory usage even during very long sessions
+* Cleaner visual experience with no scroll-back clutter
+
+*How to enable:*
+
+* Run `/tui fullscreen` within a session
+* Or set the environment variable: `CLAUDE_CODE_NO_FLICKER=1` to start every session in fullscreen mode
+
+The environment variable approach is useful if you always want fullscreen mode. Add it to your shell profile:
+
+[source,sh]
+----
+export CLAUDE_CODE_NO_FLICKER=1
+----
+
+This is purely a display preference — it does not change Claude Code's behavior, just how the terminal renders.
+
+=== Output Styles and Status Line
+
+Output styles control how Claude formats its responses. They are markdown files that set instructions for tone, structure, and detail.
+
+*Output style locations:*
+
+* User-level: `~/.claude/output-styles/`
+* Project-level: `.claude/output-styles/` in any repo
+
+*Built-in styles:*
+
+* Default: standard Claude Code responses
+* Explanatory: more detailed explanations with reasoning
+* Learning: step-by-step teaching style
+
+*Custom output styles use YAML frontmatter:*
+
+[source,md]
+----
+---
+name: My Custom Style
+keep-coding-instructions: true
+---
+Your custom instructions here. These shape how Claude
+responds -- tone, verbosity, format, etc.
+----
+
+The `keep-coding-instructions` flag:
+
+* `true`: Claude's normal coding behavior is preserved, your style is added on top
+* `false`: your style fully replaces the default instructions
+
+*Status line:*
+
+The bottom bar in Claude Code shows real-time information:
+
+* Token cost for the current session
+* Active model name
+* Session duration
+* Other contextual info
+
+The status line is always visible and updates automatically. No configuration needed.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-28-voice-vim-terminal-customization
+----

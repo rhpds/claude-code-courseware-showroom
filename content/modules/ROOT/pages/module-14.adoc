@@ -1,0 +1,121 @@
+= Module 14: Debugging and Troubleshooting
+:navtitle: 14. Debugging
+:description: Learn to diagnose and fix common Claude Code issues.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Learn what to do when things go wrong — MCP server failures, tool errors, context issues, and common gotchas.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-14-debugging-troubleshooting
+----
+====
+
+== What You Will Learn
+
+* MCP server diagnostic ladder
+* Tool and permission errors
+* Context and session problems
+* The "restart and re-check" pattern
+
+== Key Concepts
+
+=== MCP Server Failures
+
+MCP server failures are the most common issue. When a server doesn't load, debug in this order:
+
+*LEVEL 1 — Is the binary reachable?*
+
+Check that the command in `settings.json` exists and is executable.
+
+*LEVEL 2 — Does the process start?*
+
+Try launching the server manually to see startup errors.
+
+*LEVEL 3 — Is the path correct?*
+
+Claude Code's PATH may differ from your shell's PATH. Use absolute paths in `settings.json` to avoid this.
+
+*LEVEL 4 — Does it respond to MCP protocol?*
+
+Some servers start but fail to handle MCP handshake.
+
+The most common fix: replace the command in `settings.json` with an absolute path. Instead of `npx`, use the output of `command -v npx`. This prevents PATH mismatch between your shell and Claude Code's runtime environment.
+
+=== Tool and Permission Errors
+
+*PERMISSION DENIED*
+
+Claude Code has a permission system. When you deny a tool call, Claude won't retry the exact same call. Fix: tell Claude "go ahead" or restart the session to reset.
+
+*TOOL NOT FOUND*
+
+The MCP server is loaded but the specific tool doesn't exist. This usually means the server version changed. Check the server's documentation for current tool names. Run `/mcp` to see available tools.
+
+*TIMEOUT*
+
+Tool took too long to execute (default 120s for Bash). For long-running commands, use `run_in_background`. For MCP tools, check if the server is hung.
+
+*HOOK BLOCKED*
+
+A PreToolUse hook blocked the action (exit code 2). Check `.claude/hooks/` and `settings.json` for hooks. The hook's output message tells you why it blocked.
+
+=== Context and Session Problems
+
+*"I told you this already"*
+
+Claude Code compresses old messages as context fills up. Information from early in a long session may be lost. Use `/compact` to compress proactively. For critical info, put it in `CLAUDE.md` or Memory MCP.
+
+*"Claude forgot the plan"*
+
+Same cause — context compression. Write plans to files, not just conversation. Use tasks (`TaskCreate`) for step tracking.
+
+*"Session is slow / expensive"*
+
+Context is too large. Every message sends the full context. Start a new session (`/clear` or exit+relaunch). Use `/cost` to check current session cost.
+
+*"Claude keeps asking for permission"*
+
+Each new command pattern needs approval. Add allowed patterns to `settings.json` permissions, or use the `/permissions` command.
+
+*"MCP tools disappeared"*
+
+Server crashed mid-session. Restart Claude Code. If it persists, run the diagnostic ladder.
+
+=== The Restart-and-Recheck Pattern
+
+When in doubt, this sequence fixes most issues:
+
+. Exit Claude Code (Ctrl+C or `/exit`)
+. Check settings: `cat ~/.claude/settings.json | python3 -m json.tool`
+. Test the server manually
+. Restart: `claude .`
+. Verify: `/mcp` (check servers are loaded)
+
+If that doesn't work:
+
+[start=6]
+. Check logs: `ls -la ~/.claude/logs/`
+. Try verbose: `claude --verbose .`
+. Reset MCP: Remove the server from `settings.json`, restart, re-add it, restart again
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-14-debugging-troubleshooting
+----

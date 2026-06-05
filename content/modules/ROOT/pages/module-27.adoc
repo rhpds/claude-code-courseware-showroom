@@ -1,0 +1,202 @@
+= Module 27: Checkpointing and Session Management
+:navtitle: 27. Checkpointing
+:description: Master session checkpoints, rewind, resume, and auto mode.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01
+
+Master session checkpoints, rewind, resume, and auto mode to work faster and recover from mistakes effortlessly.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-27-checkpointing-session-management
+----
+====
+
+== What You Will Learn
+
+* Checkpointing with Esc+Esc — rewind conversation, code, or both
+* Session resume — pick up where you left off
+* Session branching — explore alternatives safely
+* Auto mode — automate most permission approvals
+* Permission customization — fine-grained tool control
+
+== Key Concepts
+
+=== Checkpointing with Esc+Esc
+
+Claude Code automatically creates a checkpoint before every prompt you send. This means you can rewind to any prior state at any time.
+
+Press Esc twice (Esc+Esc) to open the checkpoint rewind menu. You'll see a list of your recent prompts, each one a rewind point.
+
+Select any checkpoint and you get three options:
+
+*REWIND CONVERSATION ONLY*
+
+Undoes what you said from that point forward. The conversation resets to just before that prompt. File changes are kept.
+
+Use when: you asked the wrong question or want to re-phrase a request without losing the code changes Claude already made.
+
+*REWIND CODE ONLY*
+
+Undoes all file changes made from that point forward. The conversation stays intact — Claude still remembers what you discussed and what it tried.
+
+Use when: Claude made changes you don't like and you want to try a different approach. This is the most powerful option because Claude retains the context of what went wrong, so it can try something better on the next attempt.
+
+*REWIND BOTH*
+
+Undoes both the conversation and the code changes from that point forward. A full reset to that moment in time.
+
+Use when: you want to completely start over from a known-good state, as if the later prompts never happened.
+
+*Key insight:* "Rewind code only" is especially valuable. It lets Claude learn from a failed attempt. The conversation remembers what was tried and why it didn't work, so the next attempt is usually better. Think of it as: undo the changes, keep the lessons.
+
+=== Session Resume
+
+Sessions persist when you exit Claude Code. You can pick up exactly where you left off.
+
+*claude --resume*
+
+Resumes your most recent session in the current directory. All conversation history and context are restored.
+
+*claude --continue*
+
+Same as `--resume`. Both flags work identically.
+
+*/resume*
+
+Opens a picker UI showing all recent sessions, including background jobs. Select any session to jump back into it. This is useful when you have multiple sessions across different projects.
+
+*claude --resume --name <label>*
+
+Give sessions meaningful names when you start them so they are easy to identify later in the `/resume` picker.
+
+Example:
+
+[source,sh]
+----
+claude --name "refactor-auth-module"
+----
+
+Later, `claude --resume` shows "refactor-auth-module" in the list.
+
+Named sessions make it practical to juggle multiple workstreams. Instead of guessing which session was which, you see descriptive labels like "fix-login-bug" or "add-metrics-endpoint".
+
+=== Session Branching
+
+Sometimes you want to explore an alternative approach without losing your current progress. That's what session branching does.
+
+*/branch*
+
+Splits the current session into two independent conversations. The original session stays exactly as it is. The new branch starts with a copy of the full conversation history up to that point.
+
+(This command was formerly called `/fork` — both names work.)
+
+Each branch has its own:
+
+* Conversation history (diverges from the branch point)
+* Checkpoints (new checkpoints in each branch are independent)
+* Code changes (edits in one branch don't affect the other)
+
+When to use branching:
+
+* You have a working approach but want to try a radically different one without risk
+* You want to compare two implementation strategies side by side
+* You're at a decision point and want to explore both paths
+
+After branching, you can switch between sessions with `/resume` to compare results.
+
+=== Auto Mode
+
+By default, Claude Code asks for permission before running commands, writing files, or calling MCP tools. You can change this behavior.
+
+Press Shift+Tab to cycle through permission modes:
+
+*NORMAL (default)*
+
+Claude asks permission for every tool call. You approve or deny each one individually.
+
+*AUTO-ACCEPT*
+
+All tool calls are automatically approved. Fast but gives Claude unrestricted access. Use with caution.
+
+*PLAN*
+
+Claude explains what it wants to do but doesn't execute. Useful for reviewing a proposed approach before committing.
+
+*DON'T ASK*
+
+Auto-approves everything for just this session, including commands. Equivalent to "yes to all" for the session duration.
+
+*AUTO*
+
+Uses model-based classifiers to decide whether each tool call is safe. Approves safe calls automatically and blocks risky ones. Automates roughly 93% of manual permission approvals while maintaining safety.
+
+Safety feature: when entering Auto mode, Claude strips any blanket shell access rules to prevent over-permissive configs from carrying over.
+
+*Best practices:*
+
+* Use Normal mode when doing sensitive work (production configs, credentials, destructive operations)
+* Use Auto mode for routine development (writing code, running tests, reading files)
+* Use Plan mode when you want Claude to think through a complex task before acting
+* Avoid Don't Ask on shared or production systems
+
+=== Permission Customization
+
+For fine-grained control over what Claude can do without asking, use `allowedTools` and `deniedTools` in your settings files.
+
+*Location:*
+
+* `~/.claude/settings.json` — global (all projects)
+* `.claude/settings.json` — project-wide (checked in)
+* `.claude/settings.local.json` — project-local (gitignored)
+
+*Format (in any of the above files):*
+
+[source,json]
+----
+{
+  "permissions": {
+    "allowedTools": [
+      "Bash(git *)",
+      "Bash(npm test)",
+      "mcp__github__*",
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "deniedTools": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)"
+    ]
+  }
+}
+----
+
+*Rules:*
+
+* Glob patterns work: `Bash(git *)` matches any git command
+* `mcp__github__*` matches all tools from the GitHub MCP server
+* Deny rules always win over allow rules — if a tool matches both an allow and a deny pattern, it is denied
+* Use `settings.local.json` for project-scoped permissions that you don't want committed to the repository
+
+Prefer `settings.local.json` for project-specific permissions. This keeps your global settings clean and avoids committing overly broad permissions into shared repos.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-27-checkpointing-session-management
+----

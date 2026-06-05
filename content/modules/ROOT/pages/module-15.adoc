@@ -1,0 +1,156 @@
+= Module 15: Cost and Context Management
+:navtitle: 15. Cost & Context
+:description: Manage session costs and context window usage efficiently.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Learn to manage session costs, context window usage, and model routing to get the most value from Claude Code.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-15-cost-context-management
+----
+====
+
+== What You Will Learn
+
+* Understanding session costs and the `/usage` command
+* Context window management — what fills it and how to manage it
+* Model routing — when to use which model
+* Session discipline patterns
+* Fast mode and auto-compaction settings
+* June 2026 billing changes (Agent SDK credits)
+
+== Key Concepts
+
+=== Session Costs
+
+Every message in Claude Code sends your full conversation context to the model. The cost depends on:
+
+* *Input tokens* — everything Claude reads (your messages, tool results, system prompt, CLAUDE.md, MCP server data)
+* *Output tokens* — everything Claude writes back (responses, tool calls)
+
+The `/usage` command shows your current session's token usage and cost (replaces the older `/cost` and `/stats` commands).
+
+Key numbers to watch:
+
+* Total cost: cumulative for this session
+* Context size: how much of the window is used
+* Cache hit rate: higher is better (repeated content is cheaper)
+
+Cost scales with context size. A session that starts at $0.01 per message can grow to $0.10+ per message as context fills up. The most effective cost control is keeping sessions short and focused.
+
+=== Context Window Management
+
+The context window is finite. Everything loads into it:
+
+*ALWAYS LOADED (every message):*
+
+* System prompt
+* CLAUDE.md files (workspace + project)
+* Memory files loaded by auto-memory
+* Your conversation history (messages + tool results)
+* MCP server descriptions
+
+*LOADED ON DEMAND:*
+
+* File contents (Read tool results)
+* Command output (Bash tool results)
+* Search results
+* Subagent results
+
+When the window fills up, Claude Code compresses older messages. This is why Claude "forgets" things from early in a session.
+
+*Management tools:*
+
+* `/compact` — manually compress context (keeps a summary)
+* `/clear` — wipe context and start fresh (same session)
+* `/usage` — check current usage
+* New session — exit and relaunch (cleanest reset)
+
+=== Model Routing
+
+Claude Code can route to different models for different tasks:
+
+*Opus* — most capable, most expensive
+
+Use for: planning, debugging, architecture, complex reasoning
+
+*Sonnet* — balanced capability and cost
+
+Use for: code review, search, analysis, moderate tasks
+
+*Haiku* — fastest, cheapest
+
+Use for: formatting, parsing, simple extraction, mechanical tasks
+
+*Routing strategies:*
+
+. *MANUAL:* Use `/model` to switch mid-session
+. *SKILLS:* Set `model: haiku` in skill frontmatter
+. *SUBAGENTS:* Dispatch subagents with model selection
+. *FAST MODE:* Toggle `/fast` for faster output on the same model
+
+=== Session Discipline Patterns
+
+Patterns that keep costs down and quality up:
+
+*ONE TASK PER SESSION*
+
+Start a session, do one thing, exit. Context stays small, costs stay low, Claude doesn't get confused.
+
+*FRONT-LOAD CONTEXT*
+
+Put critical info in CLAUDE.md, not in conversation. It loads every time without growing the context.
+
+*USE SUBAGENTS FOR RESEARCH*
+
+Research fills context fast. Dispatch an agent for research, get back a summary. The full search results stay in the subagent's context, not yours.
+
+*COMPACT EARLY*
+
+Don't wait for context to fill. `/compact` after completing a major step, before starting the next one.
+
+*EXIT AND RESTART*
+
+The cheapest message is the first one in a new session. Don't be afraid to start fresh.
+
+*WRITE IT DOWN*
+
+Plans, findings, decisions — write to files, not conversation. Files survive context compression and session restarts.
+
+=== Fast Mode and Auto-Compaction
+
+*Fast mode* makes Claude respond faster by using Opus with optimized output speed. It does NOT downgrade to a smaller model — you get the same Opus quality, just faster.
+
+Toggle fast mode: `/fast`
+
+Fast mode is available on Opus 4.6 and Opus 4.7. It costs more per token but saves wall-clock time.
+
+*Auto-compaction settings* (in `~/.claude/settings.json` or CLAUDE.md):
+
+* `autoCompactAt` — percentage of context to trigger auto-compact (default: ~80%)
+* `sessionLimit` — hard token limit per session
+* `thinkingTokenLimit` — cap on thinking/reasoning tokens
+
+Prompt caching also reduces costs. When you send the same context repeatedly (like CLAUDE.md content), Claude caches it. The cache has a 5-minute TTL — keeping sessions active means cache hits, which are significantly cheaper than cold reads.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-15-cost-context-management
+----

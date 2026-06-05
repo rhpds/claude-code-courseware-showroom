@@ -1,0 +1,148 @@
+= Module 18: Profile Cleanup
+:navtitle: 18. Profile Cleanup
+:description: Audit and clean your Claude Code profile to reduce context bloat.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01
+
+Audit your Claude Code profile (`~/.claude/`) for duplicate skills, orphaned plugins, redundant agents, stale settings, and context window bloat.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-18-profile-cleanup
+----
+====
+
+== What You Will Learn
+
+* Skills audit — find duplicates, orphans, and bloat
+* Agents audit — find redundant user-level agents
+* Plugins audit — find orphaned or broken plugin installs
+* MCP servers audit — find stale or duplicate server configs
+* Context impact report — measure total profile footprint
+* Guided cleanup — remove what you approve
+
+== Key Concepts
+
+=== Why Cleanup Matters
+
+Over time, `~/.claude/` accumulates clutter:
+
+* Duplicate skills (same skill registered in multiple places)
+* Orphaned plugin files (plugins removed but files left behind)
+* User-level agents that duplicate project-level ones
+* Stale MCP server entries that no longer work
+* Example or template skills that consume context but aren't used
+
+Every skill file in `~/.claude/skills/` is loaded into your context window at session start. Duplicates and unused skills directly reduce the space available for your actual work.
+
+=== Skills Audit
+
+Skills are the biggest source of context window bloat. Every SKILL.md file under `~/.claude/skills/` is loaded into your conversation at session start — even if you never use that skill.
+
+The audit checks for:
+
+* *Duplicate skills* — same skill name in multiple directories
+* *Broken symlinks* — skill directories that point to nothing
+* *Empty or near-empty skill files* — placeholder installs
+* *Total character count* — your context footprint
+
+Each category above is a potential cleanup target:
+
+*Broken symlinks*
+
+The target was deleted but the link remains. These are always safe to remove.
+
+*Empty / no SKILL.md*
+
+Directories that exist but have no skill content. Often left behind by incomplete installs or removals.
+
+*Duplicate content*
+
+Two skill directories with identical SKILL.md. One is redundant and can be removed.
+
+*Large skills*
+
+Not necessarily bad, but worth knowing which skills consume the most context. If you never use a skill that takes 20K+ chars, removing it frees significant context space.
+
+=== Agents Audit
+
+User-level agents in `~/.claude/agents/` load into every session across all projects. If the same agent also exists in a project's `.claude/agents/`, you get redundant definitions.
+
+User-level agents are best for truly global agents you use everywhere. Project-specific agents belong in the project.
+
+=== Plugins Audit
+
+Installed plugins register skills, MCP servers, and hooks. If a plugin was partially removed or its repo was deleted, orphaned files and broken registrations can linger.
+
+The audit cross-references the `installed-plugins.json` registry with what actually exists on disk.
+
+Checks:
+
+* *Orphaned plugin directories* — on disk but not in registry
+* *Ghost registrations* — in registry but no directory on disk
+* *Orphaned skill symlinks* — point to removed plugins
+
+=== MCP Servers Audit
+
+MCP server configurations can accumulate in multiple places:
+
+* `~/.claude/settings.json` (user-level)
+* `.mcp.json` (project-level)
+* Registered via `claude mcp add`
+
+Stale entries for servers that no longer exist waste startup time and can cause error messages on every session launch.
+
+The audit checks:
+
+* User-level servers and validates command paths
+* Project-level servers (in current directory)
+* Duplicates between user and project level
+* Local settings overrides
+
+=== Context Impact Report
+
+The context impact report measures the total footprint of your Claude Code profile. Every character loaded at session start reduces the context available for your actual work.
+
+A clean profile typically uses under 50K chars. Heavy profiles can exceed 500K — that's context you're paying for every message.
+
+Status levels:
+
+* *LEAN* (<50K chars) — Minimal overhead. No cleanup needed.
+* *NORMAL* (50-200K chars) — Reasonable footprint. Only clean up if specific items are clearly unused.
+* *MODERATE* (200-500K chars) — Some room for optimization. Check the skills audit for unused or duplicate skills.
+* *HEAVY* (>500K chars) — Significant context consumed before you even start working. Consider removing unused skills and duplicate agents.
+
+=== Cleanup Priority
+
+Highest impact first:
+
+. Broken symlinks — always safe, zero risk
+. Orphaned plugin files — leftover from removed plugins
+. Duplicate skills — same content in two places
+. Ghost plugin registrations — registry entries with no files
+. Unused large skills — skills you never invoke
+. Duplicate agents — user-level copies of project agents
+
+No files are deleted without your confirmation.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-18-profile-cleanup
+----
+
+Run this module periodically to keep your profile lean.

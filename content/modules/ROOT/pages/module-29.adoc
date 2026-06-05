@@ -1,0 +1,191 @@
+= Module 29: Effort and Reasoning Control
+:navtitle: 29. Effort Control
+:description: Control how hard Claude thinks using effort levels.
+
+[.module-meta]
+Estimated time: 10 minutes | Prerequisites: Module 01, Module 15 recommended
+
+Learn to control how hard Claude thinks per task using effort levels — a direct cost, latency, and quality lever that is separate from which model you run.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-29-effort-reasoning-control
+----
+====
+
+== What You Will Learn
+
+* What "effort" is — adaptive reasoning as a cost/latency lever
+* What you actually have on Vertex AI (Opus 4.6 / Sonnet 4.5)
+* The six ways to set effort
+* ultrathink vs ultracode — what works on 4.6
+* Using effort to control cost (ties into Module 15)
+* The Vertex "effort options missing" gotcha
+
+== Key Concepts
+
+=== What "Effort" Actually Is
+
+Effort controls ADAPTIVE REASONING: how much Claude thinks before and between steps, decided per step based on task complexity. It is NOT the same as choosing a model.
+
+* *Model choice* = WHICH brain answers (Opus vs Sonnet vs Haiku)
+* *Effort level* = HOW HARD that brain thinks on each step
+
+Lower effort leads to faster, cheaper responses with less thinking. Good for routine work.
+
+Higher effort leads to deeper reasoning, more tokens, and slower responses. Good for hard problems.
+
+You are charged for thinking tokens even when the thinking is collapsed and hidden. So effort is a real, direct cost lever — not just a quality knob.
+
+=== What You Have on Vertex AI
+
+Red Hat runs Claude Code through Google Vertex AI. On Vertex, the model aliases resolve differently than on the Anthropic API:
+
+[cols="2,3"]
+|===
+|Alias |Resolves to (on Vertex)
+
+|opus
+|Opus 4.6
+
+|sonnet
+|Sonnet 4.5
+
+|Default
+|Sonnet 4.5 (NOT Opus)
+|===
+
+Effort levels are PER MODEL. What you get:
+
+[cols="2,3"]
+|===
+|Model |Effort levels available
+
+|Opus 4.6 / Sonnet 4.6
+|low, medium, high (default), max
+
+|Opus 4.8 / Opus 4.7
+|low, medium, high, xhigh, max (NOT on Vertex by default)
+|===
+
+*Key consequence:* there is NO xhigh on Opus 4.6. If you set xhigh, Claude Code silently falls back to the highest supported level at or below it — so xhigh runs as high. No error, it just quietly clamps.
+
+The default effort on Opus 4.6 and Sonnet 4.6 is "high".
+
+NOTE: If you want Opus 4.7/4.8 (with xhigh) on Vertex, an admin must pin the newer model with `ANTHROPIC_DEFAULT_OPUS_MODEL=claude-opus-4-8` (and the account must have access). That's a deployment decision, not a per-session toggle.
+
+=== The Six Ways to Set Effort
+
+You can set effort through any of these. Precedence runs top to bottom (env var wins over everything):
+
+. *CLAUDE_CODE_EFFORT_LEVEL env var* — highest precedence; level name or "auto"
+. *--effort <level>* — single launched session
+. */effort* — interactive slider; or `/effort high`; or `/effort auto` to reset to model default
+. */model* — left/right arrows move the effort slider
+. *effortLevel in settings.json* — `low | medium | high | xhigh` ONLY (max and ultracode are session-only, not accepted here)
+. *effort: in skill / subagent frontmatter* — overrides the session level whenever that skill or subagent runs
+
+The level persists for low/medium/high/xhigh. "max" is session-only (except via the env var). The active level is shown next to the spinner, e.g. "with low effort", so you can confirm it without opening `/model`.
+
+*Per-skill effort (highest-leverage pattern):*
+
+For a repetitive, mechanical skill (formatting, parsing, renaming), set low effort in its frontmatter so it never burns deep-reasoning tokens:
+
+[source,md]
+----
+---
+name: reformat-json
+description: Reformat and sort JSON files
+effort: low
+---
+----
+
+This is the cleanest cost win: the skill runs cheap every time, while your main session stays at high effort for the work that needs it.
+
+=== ultrathink vs ultracode
+
+Two extras often confused with effort levels:
+
+*ultrathink*
+
+A KEYWORD you put anywhere in a prompt. It asks for deeper reasoning on that one turn without changing your session effort. It's a prompt-level instruction, so it works on any model, including Opus 4.6. Use it for a single hard message.
+
+(Note: "think", "think hard", "think more" are NOT special — only "ultrathink" is recognized.)
+
+*ultracode*
+
+A Claude Code SETTING (not a model effort level) offered in the `/effort` menu. It sends xhigh to the model AND has Claude plan a dynamic workflow for substantive tasks. Session-only.
+
+On Vertex/Opus 4.6 the xhigh part degrades to high (see above), so you keep the workflow-orchestration behavior but NOT the deeper xhigh reasoning. Worth knowing before you reach for it.
+
+=== Effort as a Cost Lever
+
+Module 15 covered model routing and session discipline. Effort is the third cost lever, applied WITHIN a model:
+
+[cols="1,4"]
+|===
+|Level |Use for
+
+|low
+|Short, scoped, latency-sensitive work that isn't intelligence-sensitive. Bulk/mechanical steps. Cheapest.
+
+|medium
+|Cost-sensitive work that can trade a little intelligence.
+
+|high
+|Default. Balances tokens and intelligence. Leave it here for most coding.
+
+|max
+|Demanding problems only. Can overthink and show diminishing returns. Session-only. Test before adopting broadly.
+|===
+
+*Practical routing for our team on Vertex:*
+
+* Keep the main session at high (the default).
+* Drop repetitive skills/subagents to low via frontmatter.
+* Use ultrathink on the occasional hard message instead of raising the whole session to max.
+* Reserve max for a genuinely stuck debugging or design problem, then drop back down.
+
+=== The Vertex "Effort Options Missing" Gotcha
+
+Claude Code decides whether a model supports effort by pattern-matching the model ID. Standard Vertex version names like "claude-opus-4-6" match fine. But if an admin pins a CUSTOM or non-standard model ID, the pattern may not match — and then `/effort` shows nothing and the slider disappears.
+
+Fix (set by whoever pins the model), declaring capabilities explicitly:
+
+[source,sh]
+----
+export ANTHROPIC_DEFAULT_OPUS_MODEL_SUPPORTED_CAPABILITIES=\
+  'effort,max_effort,thinking,adaptive_thinking,interleaved_thinking'
+----
+
+Note: do NOT include `xhigh_effort` for Opus 4.6 — it doesn't support xhigh.
+
+Separately, on Opus 4.6 / Sonnet 4.6 you can revert to the OLD fixed thinking budget (pre-adaptive-reasoning) if you ever need it:
+
+[source,sh]
+----
+export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
+export MAX_THINKING_TOKENS=10000   # then control thinking by token budget
+----
+
+Most people should leave adaptive reasoning on and just use effort levels.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* Module 15 (Cost and Context Management) recommended
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-29-effort-reasoning-control
+----

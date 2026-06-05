@@ -1,0 +1,227 @@
+= Module 17: CI/CD Integration
+:navtitle: 17. CI/CD
+:description: Use Claude Code in GitHub Actions and OpenShift Pipelines.
+
+[.module-meta]
+Estimated time: 15 minutes | Prerequisites: Module 01, GitHub repo access
+
+Use Claude Code in CI/CD pipelines — GitHub Actions, Cloud Routines, and OpenShift Pipelines — for automated code review, testing, and deployment assistance.
+
+[IMPORTANT]
+====
+This is a reference guide. The full interactive experience runs inside Claude Code with real-time verification and hands-on challenges.
+
+To run this module interactively, open the Terminal tab and run:
+
+[source,sh,role=execute]
+----
+/learn-17-ci-cd-integration
+----
+====
+
+== What You Will Learn
+
+* Claude Code in non-interactive mode
+* GitHub Actions with the official claude-code-action
+* Cloud Routines — automated workflows on Anthropic infrastructure
+* OpenShift Pipelines with Tekton
+* GitLab CI/CD integration
+* Deciding where Claude Code adds value in your pipeline
+* CI/CD billing changes (June 2026)
+
+== Key Concepts
+
+=== Non-Interactive Mode
+
+In CI/CD, Claude Code runs non-interactively. Key differences:
+
+*Interactive (your terminal):*
+
+* Prompts for permission on each tool call
+* Shows streaming output
+* Waits for your input
+
+*Non-interactive (CI pipeline):*
+
+* Must pre-approve all actions (`--dangerously-skip-permissions` or allowlisted tool patterns)
+* Output captured in logs
+* Runs to completion or timeout
+* Needs API credentials via environment variables
+
+The basic pattern:
+
+[source,sh]
+----
+claude --print -p "Review this PR for security issues" \
+  --dangerously-skip-permissions
+----
+
+Flags:
+
+* `--print` (or `-p`) — Output the response as text (no interactive UI)
+* `--dangerously-skip-permissions` — Skip all permission prompts
+* `--model sonnet` — Use a specific model (cost control)
+* `--max-tokens 4096` — Limit response length
+
+=== GitHub Actions
+
+The official GitHub Action is `anthropic/claude-code-action`. It supports two modes:
+
+*Interactive mode*
+
+`@claude` mentions in PR comments trigger Claude Code to respond. Team members can ask Claude to review code, explain changes, or implement suggestions directly in the PR.
+
+*Automation mode*
+
+Claude runs headless on GitHub events (PR open, push, issue creation). Use cases:
+
+* Automatic PR code review on every push
+* Issue triage and labeling
+* CI failure analysis and suggested fixes
+* Code implementation from issue descriptions
+
+Example workflow:
+
+[source,yaml]
+----
+- uses: anthropic/claude-code-action@v1
+  with:
+    prompt: "Review this PR for security issues and code quality"
+    output_format: json
+----
+
+The action supports structured outputs as GitHub Action outputs, progress tracking with checkboxes, and `/install-github-app` for setup.
+
+*Considerations:*
+
+* *COST:* Every PR push triggers a review. With Sonnet, a typical diff review costs $0.05-0.50 depending on diff size. Budget: ~$15-50/month for an active repo.
+* *VALUE:* Best for catching security issues and style violations that humans miss. Less useful for architectural review (needs more context than a diff provides).
+* *SECRETS:* The API key must be stored as a GitHub secret. Never put it in the workflow file.
+
+=== Cloud Routines
+
+Cloud Routines are saved Claude Code automations that run on Anthropic's cloud infrastructure — they work even when your laptop is closed.
+
+A Routine has three parts:
+
+. A prompt (what Claude should do)
+. Repositories (Claude clones and works in them)
+. Connectors (optional: Slack, Sentry, Linear, GitHub for context)
+
+*Three trigger types:*
+
+* *Scheduled* — runs on a cadence (hourly, daily, weekly). Example: morning briefing of your day at 9 AM.
+* *API* — fires on external events. Example: new Sentry error triggers analysis.
+* *GitHub* — runs on repo events (PR opened, release created). Example: auto-review every PR for security issues.
+
+Routines complement GitHub Actions:
+
+* *GitHub Actions* — deterministic CI/CD (builds, tests, linting, deploys)
+* *Routines* — interpretive tasks (review summaries, risk analysis, docs suggestions, backlog triage)
+
+They run alongside your Actions pipeline, not instead of it.
+
+Status: Research preview (April 2026). Available on all paid plans with daily run caps that scale by plan tier. Requires claude.ai/code web access to create.
+
+NOTE: Routines require an Anthropic plan with claude.ai/code access. Since Red Hat uses Vertex AI, Routines may not be available depending on your account configuration.
+
+=== OpenShift Pipelines
+
+Claude Code can validate deployments in OpenShift Pipelines (Tekton). Common use cases:
+
+* *PRE-DEPLOY:* Validate manifests, check for security issues
+* *POST-DEPLOY:* Verify health endpoints, check pod status
+* *INCIDENT:* Analyze logs when pods crash
+
+Example Tekton task:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: claude-validate-deployment
+spec:
+  params:
+    - name: namespace
+      type: string
+    - name: app-name
+      type: string
+  steps:
+    - name: validate
+      image: node:20-slim
+      env:
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: claude-api-key
+              key: api-key
+      script: |
+        npm install -g @anthropic-ai/claude-code
+
+        claude --print -p "Check the deployment status:
+        1. Are all pods running?
+        2. Is the health endpoint responding?
+        3. Any error patterns in recent logs?" \
+        --dangerously-skip-permissions --model sonnet
+----
+
+OpenShift-specific considerations:
+
+* *RBAC:* The Tekton service account needs read access to pods, logs, and routes. Don't give it write access unless Claude needs to take remediation actions.
+* *SECRETS:* Store the API key as a Kubernetes secret, reference it via `secretKeyRef`. Never bake it into the image.
+* *COST:* Post-deploy validation is infrequent (per deployment), so cost is usually low ($0.10-0.50 per deployment check).
+
+=== GitLab CI/CD
+
+Claude Code also supports GitLab CI/CD integration. The pattern is similar to GitHub Actions — use `claude -p` in headless mode within your pipeline.
+
+The key difference from GitHub Actions: there's no official GitLab equivalent of `claude-code-action` yet, so you use `claude -p` directly in your `.gitlab-ci.yml` scripts.
+
+=== Decision Framework
+
+Not every pipeline step benefits from Claude Code. Use this framework:
+
+*HIGH VALUE (add Claude):*
+
+* Security review of diffs
+* Post-deploy health validation
+* Incident log analysis
+* Documentation generation from code changes
+* Changelog generation from commits
+
+*MODERATE VALUE (consider):*
+
+* Style/convention checking (linters may be cheaper)
+* Test generation for new code
+* PR description writing
+
+*LOW VALUE (skip):*
+
+* Build compilation (deterministic, no AI needed)
+* Unit test execution (just run the tests)
+* Static analysis (dedicated tools are better)
+* Image scanning (use Trivy, Grype, etc.)
+
+The rule: use Claude for tasks that require judgment, not for tasks that have deterministic answers.
+
+=== CI/CD Billing Changes
+
+Starting June 15, 2026, headless Claude Code usage (`claude -p`) and GitHub Actions with Claude move to a separate monthly Agent SDK credit on Anthropic subscription plans.
+
+*FOR RED HAT:* Since we use Vertex AI, CI/CD usage is billed through your GCP project, not Anthropic subscriptions. The Agent SDK credit separation does not affect Vertex AI billing.
+
+== Prerequisites
+
+* Module 01 (Claude Code installed and working)
+* A GitHub repository you can modify (for Actions examples)
+* Optional: OpenShift cluster access (for Pipelines)
+
+== Run This Module
+
+Open your terminal and run:
+
+[source,sh,role=execute]
+----
+/learn-17-ci-cd-integration
+----
