@@ -1,0 +1,47 @@
+* xref:index.adoc[Welcome]
+* xref:getting-started.adoc[Getting Started]
+
+.Setup & Foundation
+* xref:module-01.adoc[01. Vertex AI Setup]
+* xref:module-02.adoc[02. Writing CLAUDE.md]
+
+.Core MCP Servers
+* xref:module-03.adoc[03. Memory MCP]
+* xref:module-04.adoc[04. Git MCP]
+* xref:module-05.adoc[05. Atlassian MCP]
+* xref:module-06.adoc[06. Playwright MCP]
+* xref:module-07.adoc[07. Notion MCP]
+* xref:module-08.adoc[08. Container & Podman MCP]
+
+.Skills & Customization
+* xref:module-09.adoc[09. Writing Custom Skills]
+* xref:module-10.adoc[10. Hooks]
+* xref:module-21.adoc[21. Plugin Marketplace]
+
+.Security
+* xref:module-24.adoc[24. Security-First Development]
+* xref:module-25.adoc[25. Security Scanning]
+
+.Advanced Patterns
+* xref:module-11.adoc[11. Building MCP Servers]
+* xref:module-12.adoc[12. Review Agents]
+* xref:module-13.adoc[13. Agent Teams vs Superpowers]
+* xref:module-26.adoc[26. Claude Agent SDK]
+
+.Parallel & Autonomous Workflows
+* xref:module-22.adoc[22. Git Worktrees]
+* xref:module-23.adoc[23. Background Agents & Goal Mode]
+
+.Workflow & Operations
+* xref:module-14.adoc[14. Debugging & Troubleshooting]
+* xref:module-15.adoc[15. Cost & Context Management]
+* xref:module-16.adoc[16. Multi-Repo Workspaces]
+* xref:module-17.adoc[17. CI/CD Integration]
+* xref:module-18.adoc[18. Profile Cleanup]
+* xref:module-27.adoc[27. Checkpointing & Session Management]
+* xref:module-28.adoc[28. Voice, Vim & Terminal]
+* xref:module-29.adoc[29. Effort & Reasoning Control]
+
+.Team-Customizable
+* xref:module-19.adoc[19. Red Hat Quick Deck]
+* xref:module-20.adoc[20. Hivemind Knowledge Base]
